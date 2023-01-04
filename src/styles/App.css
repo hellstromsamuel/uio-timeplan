@@ -1,0 +1,22 @@
+.App {
+  width: auto;
+  padding: 16px;
+  max-width: 800px;
+  min-height: calc(100vh - 32px); /* because of padding */
+}
+
+.loadingContainer {
+  display: flex;
+  width: auto;
+  height: 50vh;
+  justify-content: center;
+  align-items: center;
+}
+
+@media only screen and (min-width: 1000px) {
+  .App {
+    margin: auto;
+    border-left: 1px solid lightgray;
+    border-right: 1px solid lightgray;
+  }
+}

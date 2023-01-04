@@ -1,0 +1,39 @@
+.inputContainer {
+  margin-top: 30px;
+}
+
+.inputLabel {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.CourseItem {
+  margin-bottom: 30px;
+}
+
+hr {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  border: 1px sold lightgray;
+}
+
+a {
+  color: blue;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+table,
+td {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid lightgray;
+  border-collapse: collapse;
+}
+
+/* for very small screens */
+@media only screen and (max-width: 500px) {
+  .inputGrid {
+    grid-template-columns: auto;
+  }
+}
