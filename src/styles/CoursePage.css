@@ -1,14 +1,30 @@
 .inputContainer {
+  display: grid;
+  grid-template-columns: auto;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   margin-top: 30px;
+  padding: 16px;
 }
 
 .inputLabel {
-  font-size: 20px;
-  margin-bottom: 10px;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.AutocompleteGrid {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: auto;
+  row-gap: 15px;
 }
 
 .CourseItem {
   margin-bottom: 30px;
+}
+
+.selectedCoursesContainer {
+  margin-top: 30px;
 }
 
 hr {
@@ -29,11 +45,4 @@ td {
   padding: 10px;
   border: 1px solid lightgray;
   border-collapse: collapse;
-}
-
-/* for very small screens */
-@media only screen and (max-width: 500px) {
-  .inputGrid {
-    grid-template-columns: auto;
-  }
 }

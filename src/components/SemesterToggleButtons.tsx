@@ -3,7 +3,7 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 interface SemesterToggleButtonsProps {
-  courseSemesters?: string[];
+  semesters: { value: string; text: string }[];
   semesterCode?: string;
   setSemesterCode: (semesterCode?: string) => void;
 }
@@ -33,18 +33,15 @@ export const SemesterToggleButtons = (props: SemesterToggleButtonsProps) => {
       exclusive
       onChange={handleChange}
     >
-      {props.courseSemesters?.map((semester) => {
-        const semesterSeason = semester.slice(-1);
-        const semesterYear = semester.slice(0, 2);
+      {props.semesters?.map((semester) => {
         return (
           <ToggleButton // TODO: egen style på knappene
-            key={semester}
-            value={semester}
+            sx={{ fontSize: "14px" }}
+            key={semester.value}
+            value={semester.value}
             className="ToggleButton"
           >
-            {semesterSeason === "h"
-              ? "Høst 20" + semesterYear
-              : "Vår 20" + semesterYear}
+            {semester.text}
           </ToggleButton>
         );
       })}

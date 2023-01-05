@@ -11,6 +11,7 @@ export async function apiGetCourseSchedule(
       baseUrl + courseCode + "/semester/" + semesterCode + "/schedule";
     const response = await fetch(request);
     const data = await response.json();
+    console.log(data);
     setCourseEvents(data.events);
   } catch (error) {
     console.error(error);
