@@ -1,4 +1,4 @@
-import CourseInfoProps from "./PropsUioApi";
+import { CourseInfoProps } from "../interfaces/CourseInfoProps";
 
 function addCourseUrl(fullUrl: string) {
   const courseUrl = fullUrl.split("/");

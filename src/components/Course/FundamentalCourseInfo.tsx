@@ -1,5 +1,5 @@
 import { FC } from "react";
-import CourseInfoProps from "../../uio-api/PropsUioApi";
+import { CourseInfoProps } from "../../uio-api/interfaces/CourseInfoProps";
 
 interface FundamentalCourseInfoProps {
   courseInfo: CourseInfoProps | null;

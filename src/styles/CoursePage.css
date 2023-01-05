@@ -8,6 +8,7 @@
 }
 
 .inputLabel {
+  font-weight: bold;
   font-size: 18px;
   margin-bottom: 5px;
 }
@@ -24,7 +25,7 @@
 }
 
 .selectedCoursesContainer {
-  margin-top: 30px;
+  margin-top: 40px;
 }
 
 hr {

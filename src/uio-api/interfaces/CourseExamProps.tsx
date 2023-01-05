@@ -1,13 +1,4 @@
-export default interface CourseInfoProps {
-  code: string;
-  name: string;
-  courseUrl: string;
-  url: string;
-  schedule: string;
-  exam: string;
-}
-
-export default interface CourseExamProps {
+export interface CourseExamProps {
   availableDate: string;
   availableTime: string;
   durationHours: number;
@@ -27,13 +18,4 @@ export default interface CourseExamProps {
   status: string;
   submissionDueDate: string;
   submissionDueTime: string;
-}
-
-export default interface CourseEventsProps {
-  activityBlockType: string;
-  activityTitle: string;
-  activityTypeName: string;
-  dtStart: string;
-  dtEnd: string;
-  id: string;
 }

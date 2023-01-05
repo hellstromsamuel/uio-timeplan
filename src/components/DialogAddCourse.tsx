@@ -6,9 +6,10 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Schedule } from "./Course/Schedule";
 import { Autocomplete, Chip } from "@mui/material";
-import CourseEventsProps from "../uio-api/PropsUioApi";
+import { ColorPicker } from "./ColorPicker";
+import CourseActivityEvents from "../uio-api/interfaces/CourseActivityEvents";
+import { ScheduleEventsGrouped } from "./Course/ScheduleEventsGrouped";
 
 function hideKeyboardiOSSafari() {
   (document.activeElement as HTMLElement).blur();
@@ -20,10 +21,12 @@ interface FormDialogProps {
   setOpen: (open: boolean) => void;
   semesterCode: string | undefined;
   allSemesterCourses: string[];
+  courseCode: string | null;
   setCourseCode: (courseCode: string | null) => void;
-  selectedCourses: string[];
-  setSelectedCourses: (courses: string[]) => void;
-  courseEvents: CourseEventsProps[];
+  selectedCourses: { code: string; color: string }[];
+  setSelectedCourses: (courses: { code: string; color: string }[]) => void;
+  courseActivities: CourseActivityEvents[];
+  setCourseActivities: (events: CourseActivityEvents[]) => void;
 }
 
 export const DialogAddCourse: FC<FormDialogProps> = ({
@@ -31,31 +34,27 @@ export const DialogAddCourse: FC<FormDialogProps> = ({
   setOpen,
   semesterCode,
   allSemesterCourses,
+  courseCode,
   setCourseCode,
   selectedCourses,
   setSelectedCourses,
-  courseEvents,
+  courseActivities,
+  setCourseActivities,
 }) => {
   const [autocompleteValue, setAutocompleteValue] = useState<string | null>(
     null
   );
+  const [colorCode, setColorCode] = useState<string>("rgb(244, 67, 54, 0.5)");
+  const selectedCoursesArray = selectedCourses.map(({ code }) => code);
 
-  const addCourse = (selectedCourse: string | null) => {
-    if (selectedCourse) {
-      selectedCourses.length === 0
-        ? setSelectedCourses([selectedCourse])
-        : selectedCourses.push(selectedCourse);
+  const addCourse = () => {
+    if (courseCode) {
+      selectedCourses.push({ code: courseCode, color: colorCode });
       setCourseCode(null);
       setAutocompleteValue(null);
+      setCourseActivities([]);
+      setOpen(false);
     }
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
   };
 
   const semesterCodeToText = () => {
@@ -70,51 +69,67 @@ export const DialogAddCourse: FC<FormDialogProps> = ({
   };
 
   return (
-    <div>
-      <Dialog open={open} onClose={handleClose} fullWidth>
-        <DialogTitle sx={{ fontWeight: "bold", fontSize: "25px" }}>
-          Legg til emne
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Semester <Chip label={semesterCodeToText()} />
-          </DialogContentText>
-          <div className="AutocompleteGrid">
-            <p className="inputLabel">Velg emne</p>
-            <Autocomplete
-              options={allSemesterCourses}
-              value={autocompleteValue}
-              onChange={(event: any, newValue: string | null) => {
-                hideKeyboardiOSSafari();
-                setAutocompleteValue(newValue);
-                setCourseCode(newValue ? newValue.split(" - ")[0] : null); // only set courceCode
-              }}
-              renderInput={(params) => (
-                <TextField {...params} label="Søk i emner" />
-              )}
-            />
-            {courseEvents.length > 0 && (
-              <div>
-                <p className="inputLabel">Huk av aktiviteter</p>
-                <Schedule
-                  semesterCode={semesterCode}
-                  courseEvents={courseEvents}
-                />
-              </div>
+    <Dialog open={open} fullWidth>
+      <DialogTitle sx={{ fontWeight: "bold", fontSize: "25px" }}>
+        Legg til emne
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Semester <Chip label={semesterCodeToText()} />
+        </DialogContentText>
+        <div className="AutocompleteGrid">
+          <p className="inputLabel">Velg emne</p>
+          <Autocomplete
+            options={allSemesterCourses}
+            getOptionDisabled={(option) =>
+              selectedCoursesArray.includes(option.split(" - ")[0])
+            }
+            value={autocompleteValue}
+            onChange={(event: any, newValue: string | null) => {
+              hideKeyboardiOSSafari();
+              setAutocompleteValue(newValue);
+              setCourseCode(newValue ? newValue.split(" - ")[0] : null); // only set courceCode
+            }}
+            renderInput={(params) => (
+              <TextField {...params} label="Søk i emner" />
             )}
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Lukk</Button>
-          <Button
-            disabled={autocompleteValue === null}
-            variant={"contained"}
-            onClick={handleClose}
-          >
-            Legg til emne
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+          />
+          {courseCode && (
+            <div>
+              <p className="inputLabel">Velg fargekode</p>
+              <ColorPicker colorCode={colorCode} setColorCode={setColorCode} />
+              <Chip
+                sx={{
+                  marginTop: "10px",
+                  marginBottom: "20px",
+                  backgroundColor: colorCode,
+                }}
+                label={courseCode}
+              ></Chip>
+            </div>
+          )}
+          {courseActivities && (
+            <div>
+              <p className="inputLabel">Huk av aktiviteter</p>
+              {/* TODO: group course activties */}
+              <ScheduleEventsGrouped
+                semesterCode={semesterCode}
+                courseActivities={courseActivities}
+              />
+            </div>
+          )}
+        </div>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setOpen(false)}>Lukk</Button>
+        <Button
+          disabled={autocompleteValue === null}
+          variant={"contained"}
+          onClick={addCourse}
+        >
+          Legg til emne
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };

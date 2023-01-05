@@ -1,21 +1,18 @@
-import { FC, useEffect, useState, useRef } from "react";
-import { Exam } from "./Course/Exam";
-import { Schedule } from "./Course/Schedule";
-import { FundamentalCourseInfo } from "./Course/FundamentalCourseInfo";
+import { FC, useEffect, useState } from "react";
 import "../styles/CoursePage.css";
 import { SemesterToggleButtons } from "./SemesterToggleButtons";
-import CourseInfoProps from "../uio-api/PropsUioApi";
-import CourseExamProps from "../uio-api/PropsUioApi";
-import CourseEventsProps from "../uio-api/PropsUioApi";
-
+// import { apiGetExamInfo } from "../uio-api/requests/apiGetExamInfo";
+// import { apiGetFundamentalCourseInfo } from "../uio-api/requests/apiGetFundamentalCourseInfo";
+import { apiGetCourseSchedule } from "../uio-api/requests/apiGetCourseSchedule";
+import { apiGetCoursesInSemester } from "../uio-api/requests/apiGetCoursesInSemester";
+import { DialogAddCourse } from "./DialogAddCourse";
 import Alert from "@mui/material/Alert";
-import { apiGetExamInfo } from "../uio-api/apiGetExamInfo";
-import { apiGetFundamentalCourseInfo } from "../uio-api/apiGetFundamentalCourseInfo";
-import { apiGetCourseSchedule } from "../uio-api/apiGetCourseSchedule";
 import { Button } from "@mui/material";
 import { AddTask } from "@mui/icons-material";
-import { apiGetCoursesInSemester } from "../uio-api/apiGetCoursesInSemester";
-import { DialogAddCourse } from "./DialogAddCourse";
+// import { CourseInfoProps } from "../uio-api/interfaces/CourseInfoProps";
+// import { CourseExamProps } from "../uio-api/interfaces/CourseExamProps";
+import CourseActivityEvents from "../uio-api/interfaces/CourseActivityEvents";
+import { SelectedCourses } from "./Course/SelectedCourses";
 
 interface CoursePageProps {
   setLoading: (loading: boolean) => void;
@@ -36,28 +33,39 @@ export const CoursePage: FC<CoursePageProps> = ({
   const [semesterCode, setSemesterCode] = useState<string | undefined>(
     currentSemesterCode
   );
-  const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
-  const [courseInfo, setCourseInfo] = useState<CourseInfoProps | null>(null);
-  const [courseExams, setCourseExams] = useState<CourseExamProps[]>([]);
-  const [courseEvents, setCourseEvents] = useState<CourseEventsProps[]>([]);
+  const [selectedCourses, setSelectedCourses] = useState<
+    { code: string; color: string }[]
+  >([]);
+
+  // const [courseInfo, setCourseInfo] = useState<CourseInfoProps | null>(null);
+  // const [courseExams, setCourseExams] = useState<CourseExamProps[]>([]);
+  const [courseActivities, setCourseActivities] = useState<
+    CourseActivityEvents[]
+  >([]);
+
   const [openDialogAddCourse, setOpenDialogAddCourse] =
     useState<boolean>(false);
 
   useEffect(() => {
     setCourseCode(null);
     apiGetCoursesInSemester(setAllSemesterCourses, semesterCode, setLoading);
-  }, [, semesterCode]);
+  }, [semesterCode, setLoading]);
 
   useEffect(() => {
     if (courseCode) {
-      apiGetFundamentalCourseInfo(
+      // apiGetFundamentalCourseInfo(
+      //   baseUrl,
+      //   semesterCode,
+      //   courseCode,
+      //   setCourseInfo
+      // );
+      // apiGetExamInfo(baseUrl, semesterCode, courseCode, setCourseExams);
+      apiGetCourseSchedule(
         baseUrl,
         semesterCode,
         courseCode,
-        setCourseInfo
+        setCourseActivities
       );
-      apiGetExamInfo(baseUrl, semesterCode, courseCode, setCourseExams);
-      apiGetCourseSchedule(baseUrl, semesterCode, courseCode, setCourseEvents);
     }
   }, [baseUrl, semesterCode, courseCode]);
 
@@ -107,19 +115,16 @@ export const CoursePage: FC<CoursePageProps> = ({
         setOpen={setOpenDialogAddCourse}
         semesterCode={semesterCode}
         allSemesterCourses={allSemesterCourses}
+        courseCode={courseCode}
         setCourseCode={setCourseCode}
         selectedCourses={selectedCourses}
         setSelectedCourses={setSelectedCourses}
-        courseEvents={courseEvents}
+        courseActivities={courseActivities}
+        setCourseActivities={setCourseActivities}
       />
 
       {selectedCourses.length > 0 && (
-        <div className="selectedCoursesContainer">
-          <h2>Valgte emner</h2>
-          {selectedCourses.map((course) => {
-            return <p>{course}</p>;
-          })}
-        </div>
+        <SelectedCourses selectedCourses={selectedCourses} />
       )}
     </div>
   );

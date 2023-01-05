@@ -1,11 +1,5 @@
 import { FC } from "react";
-import CourseExamProps from "../../uio-api/PropsUioApi";
-import Timeline from "@mui/lab/Timeline";
-import TimelineItem from "@mui/lab/TimelineItem";
-import TimelineSeparator from "@mui/lab/TimelineSeparator";
-import TimelineConnector from "@mui/lab/TimelineConnector";
-import TimelineContent from "@mui/lab/TimelineContent";
-import TimelineDot from "@mui/lab/TimelineDot";
+import { CourseExamProps } from "../../uio-api/interfaces/CourseExamProps";
 
 interface ExamProps {
   courseCode: string;
@@ -16,28 +10,6 @@ export const Exam: FC<ExamProps> = ({ courseCode, courseExams }) => {
   return (
     <div className="CourseItem">
       <h3>Eksamen</h3>
-      {/* <Timeline position="left">
-        <TimelineItem>
-          <TimelineSeparator>
-            <TimelineDot />
-            <TimelineConnector />
-          </TimelineSeparator>
-          <TimelineContent>Eat</TimelineContent>
-        </TimelineItem>
-        <TimelineItem>
-          <TimelineSeparator>
-            <TimelineDot />
-            <TimelineConnector />
-          </TimelineSeparator>
-          <TimelineContent>Code</TimelineContent>
-        </TimelineItem>
-        <TimelineItem>
-          <TimelineSeparator>
-            <TimelineDot />
-          </TimelineSeparator>
-          <TimelineContent>Sleep</TimelineContent>
-        </TimelineItem>
-      </Timeline> */}
       {courseExams?.map((exam) => {
         return (
           <div key={courseCode + exam.name + exam.status}>

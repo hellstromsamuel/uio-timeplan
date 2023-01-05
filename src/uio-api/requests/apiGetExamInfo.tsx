@@ -1,4 +1,4 @@
-import CourseExamProps from "./PropsUioApi";
+import { CourseExamProps } from "../interfaces/CourseExamProps";
 
 export async function apiGetExamInfo(
   baseUrl: string,
