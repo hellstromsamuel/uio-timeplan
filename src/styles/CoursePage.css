@@ -1,3 +1,7 @@
+.CoursePage {
+  margin-bottom: 100px;
+}
+
 .inputContainer {
   display: grid;
   grid-template-columns: auto;
@@ -10,7 +14,7 @@
 .inputLabel {
   font-weight: bold;
   font-size: 18px;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
 
 .AutocompleteGrid {
@@ -20,18 +24,20 @@
   row-gap: 15px;
 }
 
-.CourseItem {
-  margin-bottom: 30px;
-}
-
 .selectedCoursesContainer {
-  margin-top: 40px;
+  border-radius: 10px;
+  margin-top: 30px;
 }
 
-hr {
-  margin-top: 30px;
-  margin-bottom: 30px;
-  border: 1px sold lightgray;
+.CourseEventComponent {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  column-gap: 10px;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  margin-top: 10px;
+  padding: 16px;
 }
 
 a {

@@ -16,9 +16,5 @@ export const ColorPicker: FC<ColorPickerProps> = ({
     );
   };
 
-  return (
-    <div style={{ marginTop: "10px", marginBottom: "10px" }}>
-      <CirclePicker color={colorCode} onChange={onChangeColor} />
-    </div>
-  );
+  return <CirclePicker color={colorCode} onChange={onChangeColor} />;
 };

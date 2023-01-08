@@ -1,17 +1,21 @@
+import { InfoOutlined } from "@mui/icons-material";
 import { Button, Chip } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { FC } from "react";
-import { ColorPicker } from "./ColorPicker";
+import CourseActivityEvents from "../uio-api/interfaces/CourseActivityEvents";
+import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
+import { CheckboxCourseActivities } from "./CheckboxCourseActivities";
+import { ColorPicker } from "./general/ColorPicker";
 
 interface DialogEditCourseProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   selectedEditCourse: {
     index: number;
-    course: { code: string; color: string };
+    course: SelectedCourse;
   };
   newColorCode: string;
   setNewColorCode: (color: string) => void;
@@ -32,6 +36,16 @@ export const DialogEditCourse: FC<DialogEditCourseProps> = ({
     changeColorSelectedCourse(selectedEditCourse.course.code, newColorCode);
     setOpen(false);
     console.log("SAVED");
+  };
+
+  const getCheckedArray = (courseActivities: CourseActivityEvents[]) => {
+    if (courseActivities) {
+      const checkedArray = [];
+      for (let i = 0; i < courseActivities.length; i++) {
+        checkedArray[i] = courseActivities[i].activitySelected;
+      }
+      return checkedArray;
+    }
   };
 
   const removeCourse = () => {
@@ -56,13 +70,27 @@ export const DialogEditCourse: FC<DialogEditCourseProps> = ({
           }}
           label={selectedEditCourse.course.code}
         ></Chip>
+        {selectedEditCourse.course.courseActivities.length > 0 ? (
+          <CheckboxCourseActivities
+            courseActivities={selectedEditCourse.course.courseActivities}
+            checkedArray={getCheckedArray(
+              selectedEditCourse.course.courseActivities
+            )}
+          />
+        ) : (
+          <div>
+            <InfoOutlined color="error" />
+            <p className="inputLabel">Ingen aktiviteter i timeplanen</p>
+          </div>
+        )}
       </DialogContent>
       <DialogActions>
+        <Button onClick={() => setOpen(false)}>Lukk</Button>
         <Button color="error" variant={"contained"} onClick={removeCourse}>
           Fjern emne
         </Button>
         <Button variant={"contained"} onClick={saveCourseChanges}>
-          Lagre endringer
+          Lagre
         </Button>
       </DialogActions>
     </Dialog>

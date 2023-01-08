@@ -7,7 +7,6 @@ interface SemesterToggleButtonsProps {
   semesterCode?: string;
   setSemesterCode: (semesterCode?: string) => void;
 }
-<ToggleButton value="23v">Vår 2023</ToggleButton>;
 
 export const SemesterToggleButtons = (props: SemesterToggleButtonsProps) => {
   const [selected, setSelected] = useState<string | undefined>(

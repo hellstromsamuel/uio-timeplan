@@ -1,35 +1,40 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Autocomplete, Chip } from "@mui/material";
-import { ColorPicker } from "./ColorPicker";
+import { ColorPicker } from "./general/ColorPicker";
 import CourseActivityEvents from "../uio-api/interfaces/CourseActivityEvents";
-import { ScheduleEventsGrouped } from "./Course/ScheduleEventsGrouped";
+import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
+import { semesterCodeToText } from "../functions/semsterCodeToText";
+import { CheckboxCourseActivities } from "./CheckboxCourseActivities";
+import { InfoOutlined } from "@mui/icons-material";
+import { apiGetCourseSchedule } from "../uio-api/requests/apiGetCourseSchedule";
 
 function hideKeyboardiOSSafari() {
   (document.activeElement as HTMLElement).blur();
   document.body.focus();
 }
 
-interface FormDialogProps {
+interface DialogAddCourseProps {
+  baseUrl: string;
   open: boolean;
   setOpen: (open: boolean) => void;
   semesterCode: string | undefined;
   allSemesterCourses: string[];
   courseCode: string | null;
   setCourseCode: (courseCode: string | null) => void;
-  selectedCourses: { code: string; color: string }[];
-  setSelectedCourses: (courses: { code: string; color: string }[]) => void;
+  selectedCourses: SelectedCourse[];
+  setSelectedCourses: (courses: SelectedCourse[]) => void;
   courseActivities: CourseActivityEvents[];
   setCourseActivities: (events: CourseActivityEvents[]) => void;
 }
 
-export const DialogAddCourse: FC<FormDialogProps> = ({
+export const DialogAddCourse: FC<DialogAddCourseProps> = ({
+  baseUrl,
   open,
   setOpen,
   semesterCode,
@@ -49,7 +54,11 @@ export const DialogAddCourse: FC<FormDialogProps> = ({
 
   const addCourse = () => {
     if (courseCode) {
-      selectedCourses.push({ code: courseCode, color: colorCode });
+      selectedCourses.push({
+        code: courseCode,
+        color: colorCode,
+        courseActivities: courseActivities,
+      });
       setCourseCode(null);
       setAutocompleteValue(null);
       setCourseActivities([]);
@@ -57,16 +66,16 @@ export const DialogAddCourse: FC<FormDialogProps> = ({
     }
   };
 
-  const semesterCodeToText = () => {
-    if (semesterCode) {
-      const semesterSeason = semesterCode.slice(-1);
-      const semesterYear = parseInt(semesterCode.slice(0, 2));
-
-      return semesterSeason === "h"
-        ? "Høst 20" + semesterYear
-        : "Vår 20" + semesterYear;
+  useEffect(() => {
+    if (courseCode) {
+      apiGetCourseSchedule(
+        baseUrl,
+        semesterCode,
+        courseCode,
+        setCourseActivities
+      );
     }
-  };
+  }, [baseUrl, semesterCode, courseCode, setCourseActivities]);
 
   return (
     <Dialog open={open} fullWidth>
@@ -74,9 +83,8 @@ export const DialogAddCourse: FC<FormDialogProps> = ({
         Legg til emne
       </DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          Semester <Chip label={semesterCodeToText()} />
-        </DialogContentText>
+        <Chip label={semesterCodeToText(semesterCode)} />
+
         <div className="AutocompleteGrid">
           <p className="inputLabel">Velg emne</p>
           <Autocomplete
@@ -86,6 +94,7 @@ export const DialogAddCourse: FC<FormDialogProps> = ({
             }
             value={autocompleteValue}
             onChange={(event: any, newValue: string | null) => {
+              setCourseActivities([]);
               hideKeyboardiOSSafari();
               setAutocompleteValue(newValue);
               setCourseCode(newValue ? newValue.split(" - ")[0] : null); // only set courceCode
@@ -101,21 +110,20 @@ export const DialogAddCourse: FC<FormDialogProps> = ({
               <Chip
                 sx={{
                   marginTop: "10px",
-                  marginBottom: "20px",
                   backgroundColor: colorCode,
                 }}
                 label={courseCode}
               ></Chip>
             </div>
           )}
-          {courseActivities && (
+
+          {courseActivities.length > 0 && (
+            <CheckboxCourseActivities courseActivities={courseActivities} />
+          )}
+          {courseCode && courseActivities.length === 0 && (
             <div>
-              <p className="inputLabel">Huk av aktiviteter</p>
-              {/* TODO: group course activties */}
-              <ScheduleEventsGrouped
-                semesterCode={semesterCode}
-                courseActivities={courseActivities}
-              />
+              <p className="inputLabel">Ingen aktiviteter i timeplanen</p>
+              <InfoOutlined color="error" />
             </div>
           )}
         </div>
