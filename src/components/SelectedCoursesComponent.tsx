@@ -3,6 +3,7 @@ import { Chip } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { combineCourseActivities } from "../functions/combineCourseActivities";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
+import { CalendarComponent } from "./CalendarComponent";
 import { CourseEventComponent } from "./CourseEventComponent";
 import { DialogEditCourse } from "./DialogEditCourse";
 
@@ -64,24 +65,25 @@ export const SelectedCoursesComponent: FC<SelectedCoursesComponentProps> = ({
         );
       })}
 
-      <div>
-        <h2>Kombinert timeplan</h2>
-        {combineCourseActivities(selectedCourses).map((courseEvent, index) => {
-          const date = courseEvent.dtStart.split("T")[0];
-          const dateHeader = date !== courseEventDate ? true : false;
-          if (dateHeader) courseEventDate = date;
-          return (
-            <div key={index}>
-              {dateHeader && (
-                <p style={{ marginTop: "30px", fontSize: "18px" }}>
-                  {courseEvent.weekday + " - " + date}
-                </p>
-              )}
-              <CourseEventComponent courseEvent={courseEvent} />
-            </div>
-          );
-        })}
-      </div>
+      <h2>Timeplan kalender</h2>
+      <CalendarComponent />
+
+      <h2>Timeplan aktiviteter</h2>
+      {combineCourseActivities(selectedCourses).map((courseEvent, index) => {
+        const date = courseEvent.dtStart.split("T")[0];
+        const dateHeader = date !== courseEventDate ? true : false;
+        if (dateHeader) courseEventDate = date;
+        return (
+          <div key={index}>
+            {dateHeader && (
+              <p style={{ marginTop: "30px", fontSize: "18px" }}>
+                {courseEvent.weekday + " - " + date}
+              </p>
+            )}
+            <CourseEventComponent courseEvent={courseEvent} />
+          </div>
+        );
+      })}
 
       {openDialogEditCourse && (
         <DialogEditCourse

@@ -1,7 +1,7 @@
 .App {
   width: auto;
   padding: 16px;
-  max-width: 800px;
+  max-width: 1000px;
   min-height: calc(100vh - 32px); /* because of padding */
 }
 

@@ -29,6 +29,21 @@
   margin-top: 30px;
 }
 
+.CalendarContainer {
+  margin-bottom: 40px;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.TableHead {
+  margin-bottom: 20px;
+}
+
+td {
+  height: 20px;
+}
+
 .CourseEventComponent {
   display: grid;
   grid-template-columns: auto auto 1fr auto;
