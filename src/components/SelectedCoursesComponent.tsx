@@ -1,4 +1,4 @@
-import { Delete, Edit } from "@mui/icons-material";
+import { Edit } from "@mui/icons-material";
 import { Chip, Divider } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";

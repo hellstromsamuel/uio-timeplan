@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./styles/App.css";
-import { CircularProgress, Typography } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { CoursePage } from "./components/CoursePage";
 import { calculateSemestersFromToday } from "./functions/calculateSemestersFromToday";
 import { calculateCurrentSemesterCode } from "./functions/calculateCurrentSemesterCode";
