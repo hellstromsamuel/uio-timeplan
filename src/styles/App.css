@@ -1,9 +1,12 @@
 .App {
   background-color: rgb(249, 249, 255);
+  min-height: 100vh;
 }
 
 .AppBarContent {
+  background-color: white;
   width: 100%;
+  height: auto;
   max-width: 1000px;
 }
 
