@@ -27,7 +27,6 @@ export const SemesterToggleButtons = (props: SemesterToggleButtonsProps) => {
 
   return (
     <ToggleButtonGroup
-      color="primary"
       value={props.semesterCode}
       exclusive
       onChange={handleChange}

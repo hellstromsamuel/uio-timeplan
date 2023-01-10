@@ -1,8 +1,18 @@
 .App {
+  background-color: rgb(249, 249, 255);
+}
+
+.AppBarContent {
+  width: 100%;
+  max-width: 1000px;
+}
+
+.MainContent {
+  margin-top: auto;
   width: auto;
   padding: 16px;
   max-width: 1000px;
-  min-height: calc(100vh - 32px); /* because of padding */
+  min-height: auto; /* because of padding */
 }
 
 .loadingContainer {
@@ -14,14 +24,11 @@
 }
 
 @media only screen and (min-width: 1000px) {
-  .App {
+  .MainContent {
     margin: auto;
-    border-left: 1px solid lightgray;
-    border-right: 1px solid lightgray;
-    padding: 26px;
   }
 
-  h1 {
-    text-align: center;
+  .AppBarContent {
+    margin: auto;
   }
 }

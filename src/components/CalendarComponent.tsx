@@ -69,34 +69,75 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
   };
 
   return (
-    <div className="CalendarContainer">
-      <div className="CalendarTableHeader">
+    <div className="CalendarTableComponent">
+      <div className="CalenderShortcutsContainer">
+        <Button
+          variant="outlined"
+          onClick={() => setWeek(getCurrentWeekInterval())}
+          sx={{
+            marginLeft: "5px",
+            marginRight: "5px",
+            color: "black",
+            border: "1px solid black",
+            ":hover": {
+              backgroundColor: "black",
+              color: "white",
+              border: "1px solid black",
+            },
+          }}
+        >
+          I dag
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={() => setWeek(getCurrentWeekInterval())}
+          sx={{
+            marginLeft: "5px",
+            marginRight: "5px",
+            color: "black",
+            border: "1px solid black",
+            ":hover": {
+              backgroundColor: "black",
+              color: "white",
+              border: "1px solid black",
+            },
+          }}
+        >
+          Start
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={() => setWeek(getCurrentWeekInterval())}
+          sx={{
+            marginLeft: "5px",
+            marginRight: "5px",
+            color: "black",
+            border: "1px solid black",
+            ":hover": {
+              backgroundColor: "black",
+              color: "white",
+              border: "1px solid black",
+            },
+          }}
+        >
+          Slutt
+        </Button>
+      </div>
+
+      <div className="CalendarHeaderContainer">
         {week.weekInterval.length > 0 && (
           <h3>{getWeekIntervalString(week.weekInterval)}</h3>
         )}
         <div className="CalenderPrevNextButtons">
           <IconButton
-            color={"primary"}
+            sx={{ color: "black" }}
             onClick={() => changeWeek("prev", week.weekInterval[0])}
           >
             <ArrowBack />
           </IconButton>
-          <Button
-            variant="outlined"
-            onClick={() => setWeek(getCurrentWeekInterval())}
-            sx={{
-              marginLeft: "5px",
-              marginRight: "5px",
-              ":hover": {
-                backgroundColor: "primary.main",
-                color: "white",
-              },
-            }}
-          >
-            I dag
-          </Button>
+
           <IconButton
-            color={"primary"}
+            sx={{ color: "black" }}
             onClick={() => changeWeek("next", week.weekInterval[0])}
           >
             <ArrowForward />
@@ -105,7 +146,7 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
       </div>
       <TableContainer>
         <Table
-          sx={{ width: "98%", minWidth: 600 }}
+          sx={{ width: "99.9%", minWidth: 600, border: "none" }}
           size="small"
           aria-label="a dense table"
         >
@@ -114,11 +155,21 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
               <TableCell>
                 <strong>Uke {week.weekNumber}</strong>
               </TableCell>
-              <TableCell align="center">Mandag</TableCell>
-              <TableCell align="center">Tirsdag</TableCell>
-              <TableCell align="center">Onsdag</TableCell>
-              <TableCell align="center">Torsdag</TableCell>
-              <TableCell align="center">Fredag</TableCell>
+              <TableCell align="center">
+                <strong>Mandag</strong>
+              </TableCell>
+              <TableCell align="center">
+                <strong>Tirsdag</strong>
+              </TableCell>
+              <TableCell align="center">
+                <strong>Onsdag</strong>
+              </TableCell>
+              <TableCell align="center">
+                <strong>Torsdag</strong>
+              </TableCell>
+              <TableCell align="center">
+                <strong>Fredag</strong>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

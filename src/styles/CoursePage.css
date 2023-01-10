@@ -3,6 +3,7 @@
 }
 
 .headerContainer {
+  background-color: white;
   display: grid;
   grid-template-columns: auto;
   border-radius: 10px;
@@ -24,23 +25,48 @@
 }
 
 .selectedCoursesContainer {
+  background-color: white;
+  padding: 20px;
   border-radius: 10px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   margin-top: 30px;
 }
 
 .CalendarContainer {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   padding: 10px;
   border-radius: 10px;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  width: calc(100%-32px);
   display: grid;
   grid-template-columns: auto;
 }
 
-.CalendarTableHeader {
-  margin-bottom: 10px;
-  padding: 10px;
+.CalenderViewToggleButtons {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+  align-items: center;
+}
+
+.CalendarTableComponent {
+  display: grid;
+  grid-template-columns: auto;
+}
+
+.CalendarTableComponent {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: auto;
+}
+
+.CalenderShortcutsContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.CalendarHeaderContainer {
+  margin-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
   width: auto;
   display: grid;
   grid-template-columns: 1fr auto;

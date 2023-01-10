@@ -49,7 +49,7 @@ export const CoursePage: FC<CoursePageProps> = ({
   return (
     <div className="CoursePage">
       <div className="headerContainer">
-        <Alert severity="info">
+        <Alert sx={{ borderRadius: "10px 10px 0 0" }} severity="info">
           <ol style={{ margin: "0", fontSize: "16px" }}>
             <li>Velg semester</li>
             <li>Legg til emner</li>

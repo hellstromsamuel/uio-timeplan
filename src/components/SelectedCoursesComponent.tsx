@@ -1,10 +1,12 @@
-import { Edit } from "@mui/icons-material";
-import { Chip } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import { Chip, Divider } from "@mui/material";
 import { FC, useEffect, useState } from "react";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
 import { CalendarComponent } from "./CalendarComponent";
+import { CalendarListComponent } from "./CalendarListComponent";
+import { CalendarViewToggleButtons } from "./CalendarViewToggleButtons";
 import { DialogEditCourse } from "./DialogEditCourse";
-import { EventsListComponent } from "./EventsListComponent";
+import { MenuTabsComponent } from "./general/MenuTabsComponent";
 
 interface SelectedCoursesComponentProps {
   selectedCourses: SelectedCourse[];
@@ -22,6 +24,7 @@ export const SelectedCoursesComponent: FC<SelectedCoursesComponentProps> = ({
   const [newColorCode, setNewColorCode] = useState<string>(
     selectedEditCourse.course.color
   );
+  const [view, setView] = useState<string>("calender");
 
   useEffect(() => {
     console.log("SELECTED", selectedCourses);
@@ -62,11 +65,20 @@ export const SelectedCoursesComponent: FC<SelectedCoursesComponentProps> = ({
         );
       })}
 
-      <h2>Timeplan kalender</h2>
-      <CalendarComponent selectedCourses={selectedCourses} />
+      <MenuTabsComponent />
+      <Divider sx={{ marginBottom: "20px" }} />
 
-      <h2>Timeplan aktiviteter</h2>
-      <EventsListComponent selectedCourses={selectedCourses} />
+      <div className="CalendarContainer">
+        <CalendarViewToggleButtons view={view} setView={setView} />
+
+        {view === "calender" && (
+          <CalendarComponent selectedCourses={selectedCourses} />
+        )}
+        {view === "list" && (
+          <CalendarListComponent selectedCourses={selectedCourses} />
+        )}
+        {view === "text" && <p>Ren tekst</p>}
+      </div>
 
       {openDialogEditCourse && (
         <DialogEditCourse

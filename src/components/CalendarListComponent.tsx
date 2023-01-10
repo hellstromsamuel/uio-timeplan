@@ -2,13 +2,13 @@ import { FC } from "react";
 import { combineCourseActivities } from "../functions/combineCourseActivities";
 import CourseEvent from "../uio-api/interfaces/CourseEvent";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
-import { CourseEventComponent } from "./CourseEventComponent";
+import { CalenderEventListComponent } from "./CalenderEventListComponent";
 
-interface EventsListComponentProps {
+interface CalendarListComponentProps {
   selectedCourses: SelectedCourse[];
 }
 
-export const EventsListComponent: FC<EventsListComponentProps> = ({
+export const CalendarListComponent: FC<CalendarListComponentProps> = ({
   selectedCourses,
 }) => {
   const allCourseEventsMap = combineCourseActivities(selectedCourses);
@@ -18,7 +18,7 @@ export const EventsListComponent: FC<EventsListComponentProps> = ({
     .sort((a, b) => (a.key > b.key ? 1 : b.key > a.key ? -1 : 0));
 
   return (
-    <div>
+    <div className="CalenderListComponent">
       {allCourseEventsMapAsArray.map(
         (arrayKeyValue: { key: string; value: CourseEvent[] }) => {
           return (
@@ -28,7 +28,7 @@ export const EventsListComponent: FC<EventsListComponentProps> = ({
                 {arrayKeyValue.key.split("T")[0]}
               </p>
               {arrayKeyValue.value.map((event, index) => (
-                <CourseEventComponent key={index} courseEvent={event} />
+                <CalenderEventListComponent key={index} courseEvent={event} />
               ))}
             </div>
           );

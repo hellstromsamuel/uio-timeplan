@@ -1,34 +1,24 @@
-import { useState } from "react";
 import "./styles/App.css";
-import { CircularProgress } from "@mui/material";
-import { CoursePage } from "./components/CoursePage";
-import { calculateSemestersFromToday } from "./functions/calculateSemestersFromToday";
-import { calculateCurrentSemesterCode } from "./functions/calculateCurrentSemesterCode";
+import { MainContent } from "./MainContent";
 
-const baseUrl = "https://data.uio.no/studies/v1/course/";
-const currentSemesterCode = calculateCurrentSemesterCode();
-const semesters = calculateSemestersFromToday(currentSemesterCode);
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 
-const App = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-
+export const App = () => {
   return (
     <div className="App">
-      <h1>🧑‍🎓 UiO semester planlegger</h1>
-      {loading ? (
-        <div className="loadingContainer">
-          <CircularProgress size={100} />
+      <AppBar position="sticky" sx={{ backgroundColor: "white" }}>
+        <div className="AppBarContent">
+          <Toolbar>
+            <Typography variant="h6" sx={{ color: "black" }}>
+              🧑‍🎓 UiO semester planlegger
+            </Typography>
+          </Toolbar>
         </div>
-      ) : (
-        <CoursePage
-          setLoading={setLoading}
-          baseUrl={baseUrl}
-          currentSemesterCode={currentSemesterCode}
-          semesters={semesters}
-        />
-      )}
+      </AppBar>
+
+      <MainContent />
     </div>
   );
 };
-
-export default App;
