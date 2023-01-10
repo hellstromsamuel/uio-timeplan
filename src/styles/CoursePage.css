@@ -12,7 +12,7 @@
 
 .inputContainer {
   display: grid;
-  grid-template-columns: max-content;
+  grid-template-columns: auto;
   padding: 16px;
 }
 
@@ -86,4 +86,10 @@ a {
   color: blue;
   cursor: pointer;
   margin-right: 10px;
+}
+
+@media only screen and (min-width: 500px) {
+  .inputContainer {
+    grid-template-columns: max-content;
+  }
 }
