@@ -1,11 +1,10 @@
 import { FC, useEffect, useState } from "react";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Autocomplete, Chip } from "@mui/material";
+import { Chip } from "@mui/material";
 import { ColorPicker } from "./general/ColorPicker";
 import CourseActivityEvents from "../uio-api/interfaces/CourseActivityEvents";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
@@ -13,11 +12,6 @@ import { semesterCodeToText } from "../functions/semsterCodeToText";
 import { CheckboxCourseActivities } from "./CheckboxCourseActivities";
 import { InfoOutlined } from "@mui/icons-material";
 import { apiGetCourseSchedule } from "../uio-api/requests/apiGetCourseSchedule";
-
-function hideKeyboardiOSSafari() {
-  (document.activeElement as HTMLElement).blur();
-  document.body.focus();
-}
 
 interface DialogAddCourseProps {
   baseUrl: string;
@@ -28,9 +22,10 @@ interface DialogAddCourseProps {
   courseCode: string | null;
   setCourseCode: (courseCode: string | null) => void;
   selectedCourses: SelectedCourse[];
-  setSelectedCourses: (courses: SelectedCourse[]) => void;
   courseActivities: CourseActivityEvents[];
   setCourseActivities: (events: CourseActivityEvents[]) => void;
+  autocompleteValue: string | null;
+  setAutocompleteValue: (value: string | null) => void;
 }
 
 export const DialogAddCourse: FC<DialogAddCourseProps> = ({
@@ -38,19 +33,31 @@ export const DialogAddCourse: FC<DialogAddCourseProps> = ({
   open,
   setOpen,
   semesterCode,
-  allSemesterCourses,
   courseCode,
   setCourseCode,
   selectedCourses,
-  setSelectedCourses,
   courseActivities,
   setCourseActivities,
+  autocompleteValue,
+  setAutocompleteValue,
 }) => {
-  const [autocompleteValue, setAutocompleteValue] = useState<string | null>(
-    null
-  );
   const [colorCode, setColorCode] = useState<string>("rgb(244, 67, 54, 0.5)");
-  const selectedCoursesArray = selectedCourses.map(({ code }) => code);
+
+  useEffect(() => {
+    apiGetCourseSchedule(
+      baseUrl,
+      semesterCode,
+      courseCode,
+      setCourseActivities
+    );
+  }, [baseUrl, semesterCode, courseCode, setCourseActivities]);
+
+  const closeDialog = () => {
+    setCourseCode(null);
+    setAutocompleteValue(null);
+    setCourseActivities([]);
+    setOpen(false);
+  };
 
   const addCourse = () => {
     if (courseCode) {
@@ -59,68 +66,34 @@ export const DialogAddCourse: FC<DialogAddCourseProps> = ({
         color: colorCode,
         courseActivities: courseActivities,
       });
-      setCourseCode(null);
-      setAutocompleteValue(null);
-      setCourseActivities([]);
-      setOpen(false);
+      closeDialog();
     }
   };
-
-  useEffect(() => {
-    if (courseCode) {
-      apiGetCourseSchedule(
-        baseUrl,
-        semesterCode,
-        courseCode,
-        setCourseActivities
-      );
-    }
-  }, [baseUrl, semesterCode, courseCode, setCourseActivities]);
 
   return (
     <Dialog open={open} fullWidth>
       <DialogTitle sx={{ fontWeight: "bold", fontSize: "25px" }}>
-        Legg til emne
+        {courseCode}
       </DialogTitle>
       <DialogContent>
         <Chip label={semesterCodeToText(semesterCode)} />
-
-        <div className="AutocompleteGrid">
-          <p className="inputLabel">Velg emne</p>
-          <Autocomplete
-            options={allSemesterCourses}
-            getOptionDisabled={(option) =>
-              selectedCoursesArray.includes(option.split(" - ")[0])
-            }
-            value={autocompleteValue}
-            onChange={(event: any, newValue: string | null) => {
-              setCourseActivities([]);
-              hideKeyboardiOSSafari();
-              setAutocompleteValue(newValue);
-              setCourseCode(newValue ? newValue.split(" - ")[0] : null); // only set courceCode
+        <div className="DialogContentGrid">
+          <p className="inputLabel">Velg fargekode</p>
+          <ColorPicker colorCode={colorCode} setColorCode={setColorCode} />
+          <Chip
+            sx={{
+              marginTop: "20px",
+              marginBottom: "10px",
+              backgroundColor: colorCode,
+              padding: "10px",
             }}
-            renderInput={(params) => (
-              <TextField {...params} label="Søk i emner" />
-            )}
-          />
-          {courseCode && (
-            <div>
-              <p className="inputLabel">Velg fargekode</p>
-              <ColorPicker colorCode={colorCode} setColorCode={setColorCode} />
-              <Chip
-                sx={{
-                  marginTop: "10px",
-                  backgroundColor: colorCode,
-                }}
-                label={courseCode}
-              ></Chip>
-            </div>
-          )}
+            label={courseCode}
+          ></Chip>
 
           {courseActivities.length > 0 && (
             <CheckboxCourseActivities courseActivities={courseActivities} />
           )}
-          {courseCode && courseActivities.length === 0 && (
+          {courseActivities.length === 0 && (
             <div>
               <p className="inputLabel">Ingen aktiviteter i timeplanen</p>
               <InfoOutlined color="error" />
@@ -129,7 +102,7 @@ export const DialogAddCourse: FC<DialogAddCourseProps> = ({
         </div>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setOpen(false)}>Lukk</Button>
+        <Button onClick={closeDialog}>Lukk</Button>
         <Button
           disabled={autocompleteValue === null}
           variant={"contained"}

@@ -1,27 +1,14 @@
 import CourseEvent from "../uio-api/interfaces/CourseEvent";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
 
-const compareCourseEventDate = (
-  courseEventA: CourseEvent,
-  courseEventB: CourseEvent
-) => {
-  if (courseEventA.dtStart < courseEventB.dtStart) {
-    return -1;
-  }
-  if (courseEventA.dtStart > courseEventB.dtStart) {
-    return 1;
-  }
-  return 0;
-};
-
 export const combineCourseActivities = (selectedCourses: SelectedCourse[]) => {
-  const allCombinedCourseEvents: CourseEvent[] = [];
+  const allCourseEventsMap = new Map<string, CourseEvent[]>(); // dateTime: [CourseEvents...]
 
   selectedCourses.forEach((course) => {
     course.courseActivities.forEach((activity) => {
       activity.events.forEach((event) => {
         if (activity.activitySelected) {
-          allCombinedCourseEvents.push({
+          const courseEvent = {
             courseCode: course.code,
             colorCode: course.color,
             activityBlockType: activity.activityBlockType,
@@ -31,11 +18,18 @@ export const combineCourseActivities = (selectedCourses: SelectedCourse[]) => {
             dtEnd: event.dtEnd,
             title: event.title,
             weekday: event.weekday,
-          });
+          };
+          if (allCourseEventsMap.has(event.dtStart.split(":")[0])) {
+            allCourseEventsMap
+              .get(event.dtStart.split(":")[0])
+              ?.push(courseEvent);
+          } else {
+            allCourseEventsMap.set(event.dtStart.split(":")[0], [courseEvent]);
+          }
         }
       });
     });
   });
 
-  return allCombinedCourseEvents.sort(compareCourseEventDate);
+  return allCourseEventsMap;
 };

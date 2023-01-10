@@ -4,11 +4,11 @@ import { SemesterToggleButtons } from "./SemesterToggleButtons";
 import { apiGetCoursesInSemester } from "../uio-api/requests/apiGetCoursesInSemester";
 import { DialogAddCourse } from "./DialogAddCourse";
 import Alert from "@mui/material/Alert";
-import { Button } from "@mui/material";
-import { Launch, Search } from "@mui/icons-material";
+import { Autocomplete, TextField } from "@mui/material";
 import CourseActivityEvents from "../uio-api/interfaces/CourseActivityEvents";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
 import { SelectedCoursesComponent } from "./SelectedCoursesComponent";
+import { hideKeyboardiOSSafari } from "../functions/hideKeyboardiOSSafari";
 
 interface CoursePageProps {
   setLoading: (loading: boolean) => void;
@@ -28,10 +28,15 @@ export const CoursePage: FC<CoursePageProps> = ({
   const [semesterCode, setSemesterCode] = useState<string | undefined>(
     currentSemesterCode
   );
-  const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>([]);
+  const [selectedCourses] = useState<SelectedCourse[]>([]);
   const [courseActivities, setCourseActivities] = useState<
     CourseActivityEvents[]
   >([]);
+
+  const [autocompleteValue, setAutocompleteValue] = useState<string | null>(
+    null
+  );
+  const selectedCoursesArray = selectedCourses.map(({ code }) => code);
 
   const [openDialogAddCourse, setOpenDialogAddCourse] =
     useState<boolean>(false);
@@ -43,7 +48,7 @@ export const CoursePage: FC<CoursePageProps> = ({
 
   return (
     <div className="CoursePage">
-      <div className="inputContainer">
+      <div className="headerContainer">
         <Alert severity="info">
           <ol style={{ margin: "0", fontSize: "16px" }}>
             <li>Velg semester</li>
@@ -55,52 +60,43 @@ export const CoursePage: FC<CoursePageProps> = ({
           </ol>
         </Alert>
 
-        <p className="inputLabel">Velg semester</p>
-        {/* TODO: Alert Dialog - when changing semester -> must lose prev selected courses */}
-        <SemesterToggleButtons
-          semesters={semesters}
-          semesterCode={semesterCode}
-          setSemesterCode={setSemesterCode}
-        />
+        <div className="inputContainer">
+          <p className="inputLabel">Velg semester</p>
+          {/* TODO: Alert Dialog - when changing semester -> must remove prev selected courses */}
+          <SemesterToggleButtons
+            semesters={semesters}
+            semesterCode={semesterCode}
+            setSemesterCode={setSemesterCode}
+          />
 
-        <p className="inputLabel">Legg til emner</p>
-        <Button
-          sx={{
-            width: "230px",
-            fontSize: "16px",
-            padding: "10px",
-            boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-          }}
-          variant="contained"
-          endIcon={<Search />}
-          onClick={() => setOpenDialogAddCourse(true)}
-        >
-          Søk etter emne
-        </Button>
-
-        <p style={{ fontWeight: "300" }} className="inputLabel">
-          Eller trykk her for å se et eksempel
-        </p>
-        <Button
-          sx={{
-            width: "230px",
-            fontSize: "16px",
-            padding: "10px",
-            boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
-          }}
-          variant="outlined"
-          endIcon={<Launch />}
-          onClick={() => setOpenDialogAddCourse(true)}
-        >
-          Prøv et eksempel
-        </Button>
+          <p style={{ marginBottom: "15px" }} className="inputLabel">
+            Legg til emner
+          </p>
+          <Autocomplete
+            options={allSemesterCourses}
+            getOptionDisabled={(option) =>
+              selectedCoursesArray.includes(option.split(" - ")[0])
+            }
+            value={autocompleteValue}
+            onChange={(event: any, newValue: string | null) => {
+              setCourseActivities([]);
+              hideKeyboardiOSSafari();
+              setAutocompleteValue(newValue);
+              setCourseCode(newValue ? newValue.split(" - ")[0] : null); // only set courceCode
+              newValue && setOpenDialogAddCourse(true);
+            }}
+            renderInput={(params) => (
+              <TextField {...params} label="Søk i emner" />
+            )}
+          />
+        </div>
       </div>
 
       {selectedCourses.length > 0 && (
         <SelectedCoursesComponent selectedCourses={selectedCourses} />
       )}
 
-      {openDialogAddCourse && (
+      {openDialogAddCourse && courseCode && (
         <DialogAddCourse
           baseUrl={baseUrl}
           open={openDialogAddCourse}
@@ -110,9 +106,10 @@ export const CoursePage: FC<CoursePageProps> = ({
           courseCode={courseCode}
           setCourseCode={setCourseCode}
           selectedCourses={selectedCourses}
-          setSelectedCourses={setSelectedCourses}
           courseActivities={courseActivities}
           setCourseActivities={setCourseActivities}
+          autocompleteValue={autocompleteValue}
+          setAutocompleteValue={setAutocompleteValue}
         />
       )}
     </div>

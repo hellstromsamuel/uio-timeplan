@@ -2,26 +2,25 @@
   margin-bottom: 100px;
 }
 
-.inputContainer {
+.headerContainer {
   display: grid;
   grid-template-columns: auto;
   border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   margin-top: 30px;
+}
+
+.inputContainer {
+  display: grid;
+  grid-template-columns: max-content;
   padding: 16px;
 }
 
 .inputLabel {
   font-weight: bold;
   font-size: 18px;
-  margin-bottom: 6px;
-}
-
-.AutocompleteGrid {
-  margin-top: 10px;
-  display: grid;
-  grid-template-columns: auto;
-  row-gap: 15px;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 
 .selectedCoursesContainer {
@@ -33,15 +32,43 @@
   margin-bottom: 40px;
   padding: 10px;
   border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  width: calc(100%-32px);
+  display: grid;
+  grid-template-columns: auto;
 }
 
-.TableHead {
-  margin-bottom: 20px;
+.CalendarTableHeader {
+  margin-bottom: 10px;
+  padding: 10px;
+  width: auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+
+.CalendarPrevNextButtons {
+  width: auto;
+}
+
+table {
+  border: 1px solid lightgray;
 }
 
 td {
+  display: block;
   height: 20px;
+  border: 1px solid lightgray;
+}
+
+.CalendarEvent {
+  width: calc(100%-10px);
+  border-radius: 5px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  padding: 5px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .CourseEventComponent {
@@ -50,7 +77,7 @@ td {
   align-items: center;
   column-gap: 10px;
   border-radius: 10px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   margin-top: 10px;
   padding: 16px;
 }
@@ -59,12 +86,4 @@ a {
   color: blue;
   cursor: pointer;
   margin-right: 10px;
-}
-
-table,
-td {
-  margin: 10px;
-  padding: 10px;
-  border: 1px solid lightgray;
-  border-collapse: collapse;
 }

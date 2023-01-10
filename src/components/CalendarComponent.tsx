@@ -1,5 +1,7 @@
+import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import {
   Button,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -7,84 +9,141 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { endOfWeek, getWeek } from "date-fns";
+import { eachDayOfInterval } from "date-fns/esm";
+import { FC, useState } from "react";
+import { combineCourseActivities } from "../functions/combineCourseActivities";
+import { getCurrentWeekInterval } from "../functions/getCurrentWeekInterval";
+import { getWeekIntervalString } from "../functions/getWeekIntervalString";
+import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
+import { CalendarEvent } from "./CalendarEvent";
+import { timeCells } from "./general/timeCells";
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-) {
-  return { name, calories, fat, carbs, protein };
+interface CalendarComponentProps {
+  selectedCourses: SelectedCourse[];
 }
 
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
+export const CalendarComponent: FC<CalendarComponentProps> = ({
+  selectedCourses,
+}) => {
+  const [week, setWeek] = useState<{
+    weekNumber: number;
+    weekInterval: Date[];
+  }>(getCurrentWeekInterval());
 
-const timeCells = [
-  "08:00",
-  " ",
-  "09:00",
-  " ",
-  "10:00",
-  " ",
-  "11:00",
-  " ",
-  "12:00",
-  " ",
-  "13:00",
-  " ",
-  "14:00",
-  " ",
-  "15:00",
-  " ",
-  "16:00",
-];
+  const allCourseEventsMap = combineCourseActivities(selectedCourses);
 
-export const CalendarComponent = () => {
+  const changeWeek = (direction: string, weekStart: Date) => {
+    const newWeekStart = weekStart;
+    direction === "prev"
+      ? newWeekStart.setDate(weekStart.getDate() - 7)
+      : newWeekStart.setDate(weekStart.getDate() + 7);
+    const newWeekEnd = endOfWeek(newWeekStart, { weekStartsOn: 1 });
+    newWeekEnd.setDate(newWeekEnd.getDate() - 2);
+
+    const weekInterval = eachDayOfInterval({
+      start: newWeekStart,
+      end: newWeekEnd,
+    });
+    weekInterval.forEach((date) => {
+      date.setHours(date.getHours() + 12);
+    });
+
+    setWeek({
+      weekNumber: getWeek(newWeekStart),
+      weekInterval: weekInterval,
+    });
+  };
+
+  const getEventsForTableCell = (date: Date, time: string) => {
+    const cellDateTime =
+      date.toISOString().split("T")[0] + "T" + time.split(":")[0];
+
+    return (
+      <div>
+        {allCourseEventsMap.get(cellDateTime)?.map((courseEvent, index) => {
+          return <CalendarEvent key={index} courseEvent={courseEvent} />;
+        })}
+      </div>
+    );
+  };
+
   return (
     <div className="CalendarContainer">
+      <div className="CalendarTableHeader">
+        {week.weekInterval.length > 0 && (
+          <h3>{getWeekIntervalString(week.weekInterval)}</h3>
+        )}
+        <div className="CalenderPrevNextButtons">
+          <IconButton
+            color={"primary"}
+            onClick={() => changeWeek("prev", week.weekInterval[0])}
+          >
+            <ArrowBack />
+          </IconButton>
+          <Button
+            variant="outlined"
+            onClick={() => setWeek(getCurrentWeekInterval())}
+            sx={{
+              marginLeft: "5px",
+              marginRight: "5px",
+              ":hover": {
+                backgroundColor: "primary.main",
+                color: "white",
+              },
+            }}
+          >
+            I dag
+          </Button>
+          <IconButton
+            color={"primary"}
+            onClick={() => changeWeek("next", week.weekInterval[0])}
+          >
+            <ArrowForward />
+          </IconButton>
+        </div>
+      </div>
       <TableContainer>
         <Table
-          sx={{ width: "95%", minWidth: 500, border: "none" }}
+          sx={{ width: "98%", minWidth: 600 }}
           size="small"
           aria-label="a dense table"
         >
           <TableHead>
-            <div className="TableHead">
-              <Button variant="contained">Neste</Button>
-            </div>
             <TableRow>
-              <TableCell>Uke 1</TableCell>
-              <TableCell>Mandag</TableCell>
-              <TableCell>Tirsdag</TableCell>
-              <TableCell>Onsdag</TableCell>
-              <TableCell>Torsdag</TableCell>
-              <TableCell>Fredag</TableCell>
+              <TableCell>
+                <strong>Uke {week.weekNumber}</strong>
+              </TableCell>
+              <TableCell align="center">Mandag</TableCell>
+              <TableCell align="center">Tirsdag</TableCell>
+              <TableCell align="center">Onsdag</TableCell>
+              <TableCell align="center">Torsdag</TableCell>
+              <TableCell align="center">Fredag</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {timeCells.map((time, index) => (
-              <TableRow
-                style={
-                  index % 2
-                    ? { background: "#f7f7f7" }
-                    : { background: "white" }
-                }
-              >
-                <TableCell>{time}</TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            ))}
+            {timeCells.map((time, index) => {
+              return (
+                <TableRow key={index}>
+                  <TableCell>{time}</TableCell>
+                  <TableCell>
+                    {time && getEventsForTableCell(week.weekInterval[0], time)}
+                  </TableCell>
+                  <TableCell>
+                    {time && getEventsForTableCell(week.weekInterval[1], time)}
+                  </TableCell>
+                  <TableCell>
+                    {time && getEventsForTableCell(week.weekInterval[2], time)}
+                  </TableCell>
+                  <TableCell>
+                    {time && getEventsForTableCell(week.weekInterval[3], time)}
+                  </TableCell>
+                  <TableCell>
+                    {time && getEventsForTableCell(week.weekInterval[4], time)}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
