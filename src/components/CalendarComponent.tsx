@@ -11,14 +11,52 @@ import {
 } from "@mui/material";
 import { endOfWeek, getWeek } from "date-fns";
 import { eachDayOfInterval } from "date-fns/esm";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { combineCourseActivities } from "../uio-api/requests/combineCourseActivities";
-import { getCurrentWeekInterval } from "../functions/getCurrentWeekInterval";
 import { getWeekIntervalString } from "../functions/getWeekIntervalString";
 import CourseEvent from "../uio-api/interfaces/CourseEvent";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
 import { CalendarEvent } from "./CalendarEvent";
 import { timeCells } from "./general/timeCells";
+import { getWeekIntervalFromDate } from "../functions/getWeekIntervalFromDate";
+
+const getEventsForTableCell = (
+  allCourseEventsMap: Map<string, CourseEvent[]>,
+  date: Date,
+  time: string
+) => {
+  const cellDateTime =
+    date.toISOString().split("T")[0] + "T" + time.split(":")[0];
+  return allCourseEventsMap
+    .get(cellDateTime)
+    ?.map((courseEvent) => courseEvent);
+};
+
+const changeWeek = (
+  setWeek: (week: { weekNumber: number; weekInterval: Date[] }) => void,
+  direction: string,
+  weekStart: Date
+) => {
+  const newWeekStart = weekStart;
+  direction === "prev"
+    ? newWeekStart.setDate(weekStart.getDate() - 7)
+    : newWeekStart.setDate(weekStart.getDate() + 7);
+  const newWeekEnd = endOfWeek(newWeekStart, { weekStartsOn: 1 });
+  newWeekEnd.setDate(newWeekEnd.getDate() - 2);
+
+  const weekInterval = eachDayOfInterval({
+    start: newWeekStart,
+    end: newWeekEnd,
+  });
+  weekInterval.forEach((date) => {
+    date.setHours(date.getHours() + 12);
+  });
+
+  setWeek({
+    weekNumber: getWeek(newWeekStart),
+    weekInterval: weekInterval,
+  });
+};
 
 interface CalendarComponentProps {
   selectedCourses: SelectedCourse[];
@@ -27,67 +65,30 @@ interface CalendarComponentProps {
 export const CalendarComponent: FC<CalendarComponentProps> = ({
   selectedCourses,
 }) => {
+  const allCourseEventsMap = combineCourseActivities(selectedCourses);
+
+  const firstDay = allCourseEventsMap.values().next().value;
+  const firstEventDate = new Date(firstDay[0].dtStart);
+
+  const lastDay = Array.from(allCourseEventsMap.values()).slice(-1)[0];
+  const lastEventDate = new Date(lastDay[0].dtStart);
+
   const [week, setWeek] = useState<{
     weekNumber: number;
     weekInterval: Date[];
-  }>(getCurrentWeekInterval());
+  }>(getWeekIntervalFromDate(firstEventDate));
 
-  const allCourseEventsMap = combineCourseActivities(selectedCourses);
-  console.log(allCourseEventsMap);
-
-  const changeWeek = (direction: string, weekStart: Date) => {
-    const newWeekStart = weekStart;
-    direction === "prev"
-      ? newWeekStart.setDate(weekStart.getDate() - 7)
-      : newWeekStart.setDate(weekStart.getDate() + 7);
-    const newWeekEnd = endOfWeek(newWeekStart, { weekStartsOn: 1 });
-    newWeekEnd.setDate(newWeekEnd.getDate() - 2);
-
-    const weekInterval = eachDayOfInterval({
-      start: newWeekStart,
-      end: newWeekEnd,
-    });
-    weekInterval.forEach((date) => {
-      date.setHours(date.getHours() + 12);
-    });
-
-    setWeek({
-      weekNumber: getWeek(newWeekStart),
-      weekInterval: weekInterval,
-    });
-  };
-
-  const getEventsForTableCell = (date: Date, time: string) => {
-    const cellDateTime =
-      date.toISOString().split("T")[0] + "T" + time.split(":")[0];
-    return allCourseEventsMap
-      .get(cellDateTime)
-      ?.map((courseEvent) => courseEvent);
-  };
+  useEffect(() => {
+    console.log(week);
+  }, [week]);
 
   return (
     <div className="CalendarTableComponent">
       <div className="CalenderShortcutsContainer">
+        <span>Snarveier</span>
         <Button
           variant="outlined"
-          onClick={() => setWeek(getCurrentWeekInterval())}
-          sx={{
-            marginLeft: "5px",
-            marginRight: "5px",
-            color: "black",
-            border: "1px solid black",
-            ":hover": {
-              backgroundColor: "black",
-              color: "white",
-              border: "1px solid black",
-            },
-          }}
-        >
-          I dag
-        </Button>
-        <Button
-          variant="outlined"
-          onClick={() => setWeek(getCurrentWeekInterval())}
+          onClick={() => setWeek(getWeekIntervalFromDate(firstEventDate))}
           sx={{
             marginLeft: "5px",
             marginRight: "5px",
@@ -104,7 +105,7 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
         </Button>
         <Button
           variant="outlined"
-          onClick={() => setWeek(getCurrentWeekInterval())}
+          onClick={() => setWeek(getWeekIntervalFromDate(lastEventDate))}
           sx={{
             marginLeft: "5px",
             marginRight: "5px",
@@ -131,14 +132,14 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
         <div className="CalenderPrevNextButtons">
           <IconButton
             sx={{ color: "black" }}
-            onClick={() => changeWeek("prev", week.weekInterval[0])}
+            onClick={() => changeWeek(setWeek, "prev", week.weekInterval[0])}
           >
             <ArrowBack />
           </IconButton>
 
           <IconButton
             sx={{ color: "black" }}
-            onClick={() => changeWeek("next", week.weekInterval[0])}
+            onClick={() => changeWeek(setWeek, "next", week.weekInterval[0])}
           >
             <ArrowForward />
           </IconButton>
@@ -179,7 +180,11 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
           <TableBody>
             {timeCells.map((time, index) => {
               const wednesdayEvents: CourseEvent[] | undefined =
-                getEventsForTableCell(week.weekInterval[2], time);
+                getEventsForTableCell(
+                  allCourseEventsMap,
+                  week.weekInterval[2],
+                  time
+                );
               const durations = wednesdayEvents?.map(
                 (event) => event.durationHours!
               );
