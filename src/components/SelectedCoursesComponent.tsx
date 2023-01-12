@@ -24,7 +24,7 @@ export const SelectedCoursesComponent: FC<SelectedCoursesComponentProps> = ({
   const [newColorCode, setNewColorCode] = useState<string>(
     selectedEditCourse.course.color
   );
-  const [view, setView] = useState<string>("calender");
+  const [view, setView] = useState<string>("timeplan");
 
   useEffect(() => {
     console.log("SELECTED", selectedCourses);
@@ -48,7 +48,6 @@ export const SelectedCoursesComponent: FC<SelectedCoursesComponentProps> = ({
 
   return (
     <div className="selectedCoursesContainer">
-      <h2>Valgte emner</h2>
       {selectedCourses.map((course, index) => {
         return (
           <Chip
@@ -71,7 +70,7 @@ export const SelectedCoursesComponent: FC<SelectedCoursesComponentProps> = ({
       <div className="CalendarContainer">
         <CalendarViewToggleButtons view={view} setView={setView} />
 
-        {view === "calender" && (
+        {view === "timeplan" && (
           <CalendarComponent selectedCourses={selectedCourses} />
         )}
         {view === "list" && (

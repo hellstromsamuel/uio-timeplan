@@ -1,5 +1,5 @@
-import CourseEvent from "../uio-api/interfaces/CourseEvent";
-import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
+import CourseEvent from "../interfaces/CourseEvent";
+import { SelectedCourse } from "../interfaces/SelectedCourse";
 
 export const combineCourseActivities = (selectedCourses: SelectedCourse[]) => {
   const allCourseEventsMap = new Map<string, CourseEvent[]>(); // dateTime: [CourseEvents...]
@@ -16,6 +16,7 @@ export const combineCourseActivities = (selectedCourses: SelectedCourse[]) => {
             activityType: activity.activityType,
             dtStart: event.dtStart,
             dtEnd: event.dtEnd,
+            durationHours: event.durationHours,
             title: event.title,
             weekday: event.weekday,
           };

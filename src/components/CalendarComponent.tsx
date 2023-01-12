@@ -12,9 +12,10 @@ import {
 import { endOfWeek, getWeek } from "date-fns";
 import { eachDayOfInterval } from "date-fns/esm";
 import { FC, useState } from "react";
-import { combineCourseActivities } from "../functions/combineCourseActivities";
+import { combineCourseActivities } from "../uio-api/requests/combineCourseActivities";
 import { getCurrentWeekInterval } from "../functions/getCurrentWeekInterval";
 import { getWeekIntervalString } from "../functions/getWeekIntervalString";
+import CourseEvent from "../uio-api/interfaces/CourseEvent";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
 import { CalendarEvent } from "./CalendarEvent";
 import { timeCells } from "./general/timeCells";
@@ -32,6 +33,7 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
   }>(getCurrentWeekInterval());
 
   const allCourseEventsMap = combineCourseActivities(selectedCourses);
+  console.log(allCourseEventsMap);
 
   const changeWeek = (direction: string, weekStart: Date) => {
     const newWeekStart = weekStart;
@@ -58,14 +60,9 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
   const getEventsForTableCell = (date: Date, time: string) => {
     const cellDateTime =
       date.toISOString().split("T")[0] + "T" + time.split(":")[0];
-
-    return (
-      <div>
-        {allCourseEventsMap.get(cellDateTime)?.map((courseEvent, index) => {
-          return <CalendarEvent key={index} courseEvent={courseEvent} />;
-        })}
-      </div>
-    );
+    return allCourseEventsMap
+      .get(cellDateTime)
+      ?.map((courseEvent) => courseEvent);
   };
 
   return (
@@ -126,7 +123,10 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
 
       <div className="CalendarHeaderContainer">
         {week.weekInterval.length > 0 && (
-          <h3>{getWeekIntervalString(week.weekInterval)}</h3>
+          <h3>
+            {getWeekIntervalString(week.weekInterval)}
+            {" (uke " + week.weekNumber + ")"}
+          </h3>
         )}
         <div className="CalenderPrevNextButtons">
           <IconButton
@@ -146,14 +146,18 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
       </div>
       <TableContainer>
         <Table
-          sx={{ width: "99.9%", minWidth: 600, border: "none" }}
+          sx={{
+            width: "99.9%",
+            minWidth: 600,
+            border: "none",
+          }}
           size="small"
           aria-label="a dense table"
         >
           <TableHead>
             <TableRow>
               <TableCell>
-                <strong>Uke {week.weekNumber}</strong>
+                <strong>Tid</strong>
               </TableCell>
               <TableCell align="center">
                 <strong>Mandag</strong>
@@ -174,24 +178,31 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
           </TableHead>
           <TableBody>
             {timeCells.map((time, index) => {
+              const wednesdayEvents: CourseEvent[] | undefined =
+                getEventsForTableCell(week.weekInterval[2], time);
+              const durations = wednesdayEvents?.map(
+                (event) => event.durationHours!
+              );
+              const maxEventDurationHours = durations
+                ? Math.max(...durations) // 1 cell = 1 hours
+                : 1;
+
               return (
                 <TableRow key={index}>
-                  <TableCell>{time}</TableCell>
                   <TableCell>
-                    {time && getEventsForTableCell(week.weekInterval[0], time)}
+                    <strong>{time}</strong>
                   </TableCell>
-                  <TableCell>
-                    {time && getEventsForTableCell(week.weekInterval[1], time)}
+                  <TableCell rowSpan={1}>{index}</TableCell>
+                  <TableCell rowSpan={1}>{index}</TableCell>
+                  <TableCell rowSpan={maxEventDurationHours}>
+                    <div className="CalenderTableCellContainer">
+                      {wednesdayEvents?.map((courseEvent) => (
+                        <CalendarEvent courseEvent={courseEvent} />
+                      ))}
+                    </div>
                   </TableCell>
-                  <TableCell>
-                    {time && getEventsForTableCell(week.weekInterval[2], time)}
-                  </TableCell>
-                  <TableCell>
-                    {time && getEventsForTableCell(week.weekInterval[3], time)}
-                  </TableCell>
-                  <TableCell>
-                    {time && getEventsForTableCell(week.weekInterval[4], time)}
-                  </TableCell>
+                  <TableCell rowSpan={1}>{index}</TableCell>
+                  <TableCell rowSpan={1}>{index}</TableCell>
                 </TableRow>
               );
             })}

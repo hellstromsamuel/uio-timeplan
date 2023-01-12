@@ -1,4 +1,4 @@
-import { groupScheduleEventsByName } from "../../functions/groupScheduleEventsByName";
+import { groupScheduleEventsByName } from "./groupScheduleEventsByName";
 import CourseEventActivity from "../interfaces/CourseActivityEvents";
 
 export async function apiGetCourseSchedule(

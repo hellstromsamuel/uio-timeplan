@@ -1,22 +1,25 @@
 import "./styles/App.css";
 import { MainContent } from "./MainContent";
-
-import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { Link } from "@mui/material";
 
 export const App = () => {
   return (
     <div className="App">
-      <AppBar position="sticky" sx={{ backgroundColor: "white" }}>
-        <div className="AppBarContent">
-          <Toolbar>
-            <Typography variant="h6" sx={{ color: "black" }}>
-              🧑‍🎓 UiO semester planlegger
-            </Typography>
-          </Toolbar>
-        </div>
-      </AppBar>
+      <div className="AppBarContent">
+        <Toolbar>
+          <Typography variant="h5" sx={{ color: "black" }}>
+            <Link
+              underline="none"
+              sx={{ color: "black" }}
+              href="https://uio-emner.netlify.app"
+            >
+              🧑‍🎓 UiO timeplan generator
+            </Link>
+          </Typography>
+        </Toolbar>
+      </div>
 
       <MainContent />
     </div>

@@ -4,6 +4,7 @@ export default interface CourseEvent {
   activityType?: string;
   colorCode?: string;
   courseCode?: string;
+  durationHours?: number;
   dtStart: string;
   dtEnd: string;
   kind?: string;

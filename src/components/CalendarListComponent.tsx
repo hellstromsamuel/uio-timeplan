@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { combineCourseActivities } from "../functions/combineCourseActivities";
+import { combineCourseActivities } from "../uio-api/requests/combineCourseActivities";
 import CourseEvent from "../uio-api/interfaces/CourseEvent";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
 import { CalenderEventListComponent } from "./CalenderEventListComponent";

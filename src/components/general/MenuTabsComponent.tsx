@@ -39,7 +39,7 @@ export const MenuTabsComponent = () => {
           />
         }
         iconPosition="start"
-        label="Kalender"
+        label="Timeplan"
       />
 
       <Tab

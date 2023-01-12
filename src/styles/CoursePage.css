@@ -1,26 +1,24 @@
-.CoursePage {
-  margin-bottom: 100px;
-}
-
 .headerContainer {
+  width: calc(100% - 32px);
+  padding: 2px 16px 16px 16px;
   background-color: white;
-  display: grid;
-  grid-template-columns: auto;
   border-radius: 10px;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  margin-top: 30px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .inputContainer {
-  display: grid;
-  grid-template-columns: auto;
-  padding: 16px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
 }
 
 .inputLabel {
   font-weight: bold;
   font-size: 18px;
-  margin-top: 20px;
   margin-bottom: 10px;
 }
 
@@ -29,7 +27,7 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 .CalendarContainer {
@@ -82,19 +80,29 @@ table {
 }
 
 td {
-  display: block;
-  height: 20px;
+  width: calc(100% / 6);
+  height: 40px;
   border: 1px solid lightgray;
 }
 
+.CalenderTableCellContainer {
+  display: flex;
+  flex-direction: row;
+  column-gap: 5px;
+  width: auto;
+  height: 100%;
+}
+
 .CalendarEvent {
-  width: calc(100%-10px);
+  margin: 2px 0px 2px 0px; /* top right bottom left */
   border-radius: 5px;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  /* box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; */
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px; /* Like Figma Drop Shadow */
   padding: 5px;
-  margin-top: 10px;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: calc(100% - 14px); /* padding total 10px + margin total 4px */
 }
 
 .CourseEventComponent {

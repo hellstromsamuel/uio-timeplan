@@ -1,9 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import "../styles/CoursePage.css";
-import { SemesterToggleButtons } from "./SemesterToggleButtons";
 import { apiGetCoursesInSemester } from "../uio-api/requests/apiGetCoursesInSemester";
 import { DialogAddCourse } from "./DialogAddCourse";
-import Alert from "@mui/material/Alert";
 import { Autocomplete, TextField } from "@mui/material";
 import CourseActivityEvents from "../uio-api/interfaces/CourseActivityEvents";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
@@ -14,20 +12,15 @@ interface CoursePageProps {
   setLoading: (loading: boolean) => void;
   baseUrl: string;
   currentSemesterCode: string;
-  semesters: { value: string; text: string }[];
 }
 
 export const CoursePage: FC<CoursePageProps> = ({
   setLoading,
   baseUrl,
   currentSemesterCode,
-  semesters,
 }) => {
   const [allSemesterCourses, setAllSemesterCourses] = useState<string[]>([]);
   const [courseCode, setCourseCode] = useState<string | null>(null);
-  const [semesterCode, setSemesterCode] = useState<string | undefined>(
-    currentSemesterCode
-  );
   const [selectedCourses] = useState<SelectedCourse[]>([]);
   const [courseActivities, setCourseActivities] = useState<
     CourseActivityEvents[]
@@ -43,36 +36,33 @@ export const CoursePage: FC<CoursePageProps> = ({
 
   useEffect(() => {
     setCourseCode(null);
-    apiGetCoursesInSemester(setAllSemesterCourses, semesterCode, setLoading);
-  }, [semesterCode, setLoading]);
+    apiGetCoursesInSemester(
+      setAllSemesterCourses,
+      currentSemesterCode,
+      setLoading
+    );
+  }, [currentSemesterCode, setLoading]);
+
+  const semesterSeason = currentSemesterCode.slice(-1);
+  const semesterYear = parseInt(currentSemesterCode.slice(0, 2));
+
+  const semesterText =
+    semesterSeason === "h" ? "Høst 20" + semesterYear : "Vår 20" + semesterYear;
 
   return (
     <div className="CoursePage">
       <div className="headerContainer">
-        <Alert sx={{ borderRadius: "10px 10px 0 0" }} severity="info">
-          <ol style={{ margin: "0", fontSize: "16px" }}>
-            <li>Velg semester</li>
-            <li>Legg til emner</li>
-            <li>Huk av aktiviteter</li>
-            <li>
-              <strong>Se resultatet under</strong>
-            </li>
-          </ol>
-        </Alert>
-
+        <h2 style={{ marginBottom: "15px" }}>
+          {selectedCourses.length > 0
+            ? "Legg til flere emner"
+            : "Legg til emne"}
+        </h2>
         <div className="inputContainer">
-          <p className="inputLabel">Velg semester</p>
-          {/* TODO: Alert Dialog - when changing semester -> must remove prev selected courses */}
-          <SemesterToggleButtons
-            semesters={semesters}
-            semesterCode={semesterCode}
-            setSemesterCode={setSemesterCode}
-          />
+          <TextField disabled id="outlined-disabled" label={semesterText} />
 
-          <p style={{ marginBottom: "15px" }} className="inputLabel">
-            Legg til emner
-          </p>
           <Autocomplete
+            className="Autocomplete"
+            sx={{ border: "none", width: "100%" }}
             options={allSemesterCourses}
             getOptionDisabled={(option) =>
               selectedCoursesArray.includes(option.split(" - ")[0])
@@ -86,7 +76,7 @@ export const CoursePage: FC<CoursePageProps> = ({
               newValue && setOpenDialogAddCourse(true);
             }}
             renderInput={(params) => (
-              <TextField {...params} label="Søk i emner" />
+              <TextField variant="outlined" {...params} label="Søk i emner" />
             )}
           />
         </div>
@@ -101,7 +91,7 @@ export const CoursePage: FC<CoursePageProps> = ({
           baseUrl={baseUrl}
           open={openDialogAddCourse}
           setOpen={setOpenDialogAddCourse}
-          semesterCode={semesterCode}
+          semesterCode={currentSemesterCode}
           allSemesterCourses={allSemesterCourses}
           courseCode={courseCode}
           setCourseCode={setCourseCode}
