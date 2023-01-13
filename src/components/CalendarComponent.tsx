@@ -1,7 +1,8 @@
-import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { ArrowBack, ArrowForward, Today } from "@mui/icons-material";
 import {
   Button,
   IconButton,
+  styled,
   Table,
   TableBody,
   TableCell,
@@ -10,7 +11,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { endOfWeek, getWeek } from "date-fns";
-import { eachDayOfInterval } from "date-fns/esm";
+import { eachDayOfInterval, startOfWeek } from "date-fns/esm";
 import { FC, useEffect, useState } from "react";
 import { combineCourseActivities } from "../uio-api/requests/combineCourseActivities";
 import { getWeekIntervalString } from "../functions/getWeekIntervalString";
@@ -19,6 +20,14 @@ import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
 import { CalendarEvent } from "./CalendarEvent";
 import { timeCells } from "./general/timeCells";
 import { getWeekIntervalFromDate } from "../functions/getWeekIntervalFromDate";
+
+const getStartOfWeekFromDate = (date: Date) => {
+  const startOfWeekTodayDate = startOfWeek(date, { weekStartsOn: 1 });
+  if (startOfWeekTodayDate.getHours() === 0) {
+    startOfWeekTodayDate.setHours(startOfWeekTodayDate.getHours() + 12); // avoid time to be 00:00.000
+  }
+  return startOfWeekTodayDate.toISOString().split("T")[0];
+};
 
 const getEventsForTableCell = (
   allCourseEventsMap: Map<string, CourseEvent[]>,
@@ -67,59 +76,108 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
 }) => {
   const allCourseEventsMap = combineCourseActivities(selectedCourses);
 
+  const today = new Date();
+  const startOfWeekTodayString = getStartOfWeekFromDate(today);
+  console.log("TODAY", startOfWeekTodayString);
+
   const firstDay = allCourseEventsMap.values().next().value;
   const firstEventDate = new Date(firstDay[0].dtStart);
+  const startOfWeekFirstEventDateString =
+    getStartOfWeekFromDate(firstEventDate);
+  console.log("FIRST", startOfWeekFirstEventDateString);
 
   const lastDay = Array.from(allCourseEventsMap.values()).slice(-1)[0];
   const lastEventDate = new Date(lastDay[0].dtStart);
+  const startOfWeekLastEventDateString = getStartOfWeekFromDate(lastEventDate);
+  console.log("LAST", startOfWeekLastEventDateString);
 
   const [week, setWeek] = useState<{
     weekNumber: number;
     weekInterval: Date[];
   }>(getWeekIntervalFromDate(firstEventDate));
+  const [activeShortcut, setActiveShortcut] =
+    useState<string>("firstEventDate");
 
   useEffect(() => {
+    console.log(week.weekInterval.includes(firstEventDate));
     console.log(week);
   }, [week]);
+
+  const ShortcutButton = styled(Button)(({ theme }) => ({
+    marginRight: "5px",
+    ":hover": {
+      background: theme.palette.primary.main,
+      color: theme.palette.primary.contrastText,
+    },
+  }));
 
   return (
     <div className="CalendarTableComponent">
       <div className="CalenderShortcutsContainer">
-        <span>Snarveier</span>
-        <Button
+        <span style={{ marginRight: "10px" }}>Snarveier</span>
+        <ShortcutButton
           variant="outlined"
-          onClick={() => setWeek(getWeekIntervalFromDate(firstEventDate))}
+          onClick={() => {
+            setActiveShortcut("i dag");
+            setWeek(getWeekIntervalFromDate(new Date()));
+          }}
           sx={{
-            marginLeft: "5px",
-            marginRight: "5px",
-            color: "black",
-            border: "1px solid black",
-            ":hover": {
-              backgroundColor: "black",
-              color: "white",
-              border: "1px solid black",
-            },
+            backgroundColor:
+              week.weekInterval[0].toISOString().split("T")[0] ===
+              startOfWeekTodayString
+                ? "primary.main"
+                : "white",
+            color:
+              week.weekInterval[0].toISOString().split("T")[0] ===
+              startOfWeekTodayString
+                ? "white"
+                : "primary.main",
+          }}
+        >
+          I dag
+        </ShortcutButton>
+        <ShortcutButton
+          variant="outlined"
+          onClick={() => {
+            setActiveShortcut("firstEventDate");
+            setWeek(getWeekIntervalFromDate(firstEventDate));
+          }}
+          sx={{
+            backgroundColor:
+              week.weekInterval[0].toISOString().split("T")[0] ===
+              startOfWeekFirstEventDateString
+                ? "primary.main"
+                : "white",
+            color:
+              week.weekInterval[0].toISOString().split("T")[0] ===
+              startOfWeekFirstEventDateString
+                ? "white"
+                : "primary.main",
           }}
         >
           Start
-        </Button>
-        <Button
+        </ShortcutButton>
+        <ShortcutButton
           variant="outlined"
-          onClick={() => setWeek(getWeekIntervalFromDate(lastEventDate))}
+          onClick={() => {
+            setActiveShortcut("lastEventDate");
+            setWeek(getWeekIntervalFromDate(lastEventDate));
+          }}
           sx={{
-            marginLeft: "5px",
-            marginRight: "5px",
-            color: "black",
-            border: "1px solid black",
-            ":hover": {
-              backgroundColor: "black",
-              color: "white",
-              border: "1px solid black",
-            },
+            backgroundColor:
+              week.weekInterval[0].toISOString().split("T")[0] ===
+              startOfWeekLastEventDateString
+                ? "primary.main"
+                : "white",
+            color:
+              week.weekInterval[0].toISOString().split("T")[0] ===
+              startOfWeekLastEventDateString
+                ? "white"
+                : "primary.main",
           }}
         >
           Slutt
-        </Button>
+        </ShortcutButton>
       </div>
 
       <div className="CalendarHeaderContainer">
