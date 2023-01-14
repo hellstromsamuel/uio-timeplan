@@ -1,12 +1,13 @@
 import { FC, useEffect, useState } from "react";
 import "../styles/CoursePage.css";
 import { apiGetCoursesInSemester } from "../uio-api/requests/apiGetCoursesInSemester";
-import { DialogAddCourse } from "./DialogAddCourse";
+import { DialogAddCourse } from "./dialogs/DialogAddCourse";
 import { Autocomplete, TextField } from "@mui/material";
 import CourseActivityEvents from "../uio-api/interfaces/CourseActivityEvents";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
 import { SelectedCoursesComponent } from "./SelectedCoursesComponent";
 import { hideKeyboardiOSSafari } from "../functions/hideKeyboardiOSSafari";
+import { getSemesterText } from "../functions/getSemesterText";
 
 interface CoursePageProps {
   setLoading: (loading: boolean) => void;
@@ -21,7 +22,7 @@ export const CoursePage: FC<CoursePageProps> = ({
 }) => {
   const [allSemesterCourses, setAllSemesterCourses] = useState<string[]>([]);
   const [courseCode, setCourseCode] = useState<string | null>(null);
-  const [selectedCourses] = useState<SelectedCourse[]>([]);
+  const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>([]);
   const [courseActivities, setCourseActivities] = useState<
     CourseActivityEvents[]
   >([]);
@@ -43,22 +44,20 @@ export const CoursePage: FC<CoursePageProps> = ({
     );
   }, [currentSemesterCode, setLoading]);
 
-  const semesterSeason = currentSemesterCode.slice(-1);
-  const semesterYear = parseInt(currentSemesterCode.slice(0, 2));
-
-  const semesterText =
-    semesterSeason === "h" ? "Høst 20" + semesterYear : "Vår 20" + semesterYear;
-
   return (
     <div className="CoursePage">
       <div className="headerContainer">
         <h2 style={{ marginBottom: "15px" }}>
           {selectedCourses.length > 0
             ? "Legg til flere emner"
-            : "Legg til emne"}
+            : "Legg til emner"}
         </h2>
         <div className="inputContainer">
-          <TextField disabled id="outlined-disabled" label={semesterText} />
+          <TextField
+            disabled
+            id="outlined-disabled"
+            label={getSemesterText(currentSemesterCode)}
+          />
 
           <Autocomplete
             className="Autocomplete"
@@ -83,7 +82,10 @@ export const CoursePage: FC<CoursePageProps> = ({
       </div>
 
       {selectedCourses.length > 0 && (
-        <SelectedCoursesComponent selectedCourses={selectedCourses} />
+        <SelectedCoursesComponent
+          selectedCourses={selectedCourses}
+          setSelectedCourses={setSelectedCourses}
+        />
       )}
 
       {openDialogAddCourse && courseCode && (
@@ -96,6 +98,7 @@ export const CoursePage: FC<CoursePageProps> = ({
           courseCode={courseCode}
           setCourseCode={setCourseCode}
           selectedCourses={selectedCourses}
+          setSelectedCourses={setSelectedCourses}
           courseActivities={courseActivities}
           setCourseActivities={setCourseActivities}
           autocompleteValue={autocompleteValue}

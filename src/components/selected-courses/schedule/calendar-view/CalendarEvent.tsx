@@ -1,5 +1,5 @@
 import { FC } from "react";
-import CourseEvent from "../uio-api/interfaces/CourseEvent";
+import CourseEvent from "../../../../uio-api/interfaces/CourseEvent";
 
 interface CalendarEventProps {
   courseEvent: CourseEvent;

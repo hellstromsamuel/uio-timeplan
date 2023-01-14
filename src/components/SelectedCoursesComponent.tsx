@@ -1,49 +1,54 @@
 import { Edit } from "@mui/icons-material";
 import { Chip, Divider } from "@mui/material";
 import { FC, useEffect, useState } from "react";
+import CourseEvent from "../uio-api/interfaces/CourseEvent";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
-import { CalendarComponent } from "./CalendarComponent";
-import { CalendarListComponent } from "./CalendarListComponent";
-import { CalendarViewToggleButtons } from "./CalendarViewToggleButtons";
-import { DialogEditCourse } from "./DialogEditCourse";
-import { MenuTabsComponent } from "./general/MenuTabsComponent";
+import { combineCourseActivities } from "../uio-api/requests/combineCourseActivities";
+import { CalendarComponent } from "./selected-courses/schedule/CalendarComponent";
+import { DialogEditCourse } from "./dialogs/DialogEditCourse";
+import { MenuTabsComponent } from "./selected-courses/schedule/MenuTabsComponent";
+import { CalendarListComponent } from "./selected-courses/schedule/list-view/CalendarListComponent";
+import { ToggleButtonsCalendarView } from "./selected-courses/schedule/calendar-view/ToggleButtonsCalendarView";
 
 interface SelectedCoursesComponentProps {
   selectedCourses: SelectedCourse[];
+  setSelectedCourses: (array: SelectedCourse[]) => void;
 }
 
 export const SelectedCoursesComponent: FC<SelectedCoursesComponentProps> = ({
   selectedCourses,
+  setSelectedCourses,
 }) => {
   const [openDialogEditCourse, setOpenDialogEditCourse] =
     useState<boolean>(false);
-  const [selectedEditCourse, setSelectedEditCourse] = useState<{
-    index: number;
-    course: SelectedCourse;
-  }>({ index: 0, course: selectedCourses[0] });
-  const [newColorCode, setNewColorCode] = useState<string>(
-    selectedEditCourse.course.color
+  const [selectedEditCourse, setSelectedEditCourse] = useState<SelectedCourse>(
+    selectedCourses[0]
   );
+  const [newColorCode, setNewColorCode] = useState<string>(
+    selectedEditCourse.color
+  );
+  const [allCourseEventsMap, setAllCourseEventsMap] = useState<
+    Map<string, CourseEvent[]>
+  >(combineCourseActivities(selectedCourses));
   const [view, setView] = useState<string>("timeplan");
 
   useEffect(() => {
-    console.log("SELECTED", selectedCourses);
+    console.log("SELECTED COURSES COMPONENT", selectedCourses);
+    setAllCourseEventsMap(combineCourseActivities(selectedCourses));
   }, [selectedCourses]);
 
   const handleChipEdit = (index: number) => {
-    setSelectedEditCourse({ index: index, course: selectedCourses[index] });
+    setSelectedEditCourse(selectedCourses[index]);
     setNewColorCode(selectedCourses[index].color); // show selected color in edit ColorPicker
     setOpenDialogEditCourse(true);
   };
 
   const changeColorSelectedCourse = (code: string, color: string) => {
-    selectedCourses.forEach((course) => {
-      if (course.code === code) course.color = color;
-    });
-  };
-
-  const removeCourseFromSelectedList = (index: number) => {
-    selectedCourses.splice(index, 1);
+    const index = selectedCourses.findIndex((course) => course.code === code);
+    if (index !== -1) {
+      selectedCourses[index].color = color;
+    }
+    setSelectedCourses([...selectedCourses]);
   };
 
   return (
@@ -65,16 +70,16 @@ export const SelectedCoursesComponent: FC<SelectedCoursesComponentProps> = ({
       })}
 
       <MenuTabsComponent />
-      <Divider sx={{ marginBottom: "20px" }} />
+      <Divider />
 
       <div className="CalendarContainer">
-        <CalendarViewToggleButtons view={view} setView={setView} />
+        <ToggleButtonsCalendarView view={view} setView={setView} />
 
         {view === "timeplan" && (
-          <CalendarComponent selectedCourses={selectedCourses} />
+          <CalendarComponent allCourseEventsMap={allCourseEventsMap} />
         )}
         {view === "list" && (
-          <CalendarListComponent selectedCourses={selectedCourses} />
+          <CalendarListComponent allCourseEventsMap={allCourseEventsMap} />
         )}
         {view === "text" && <p>Ren tekst</p>}
       </div>
@@ -87,7 +92,8 @@ export const SelectedCoursesComponent: FC<SelectedCoursesComponentProps> = ({
           newColorCode={newColorCode}
           setNewColorCode={setNewColorCode}
           changeColorSelectedCourse={changeColorSelectedCourse}
-          removeCourseFromSelectedList={removeCourseFromSelectedList}
+          selectedCourses={selectedCourses}
+          setSelectedCourses={setSelectedCourses}
         />
       )}
     </div>

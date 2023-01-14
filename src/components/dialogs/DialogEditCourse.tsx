@@ -5,22 +5,20 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { FC } from "react";
-import CourseActivityEvents from "../uio-api/interfaces/CourseActivityEvents";
-import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
+import CourseActivityEvents from "../../uio-api/interfaces/CourseActivityEvents";
+import { SelectedCourse } from "../../uio-api/interfaces/SelectedCourse";
+import { ColorPicker } from "../general/ColorPicker";
 import { CheckboxCourseActivities } from "./CheckboxCourseActivities";
-import { ColorPicker } from "./general/ColorPicker";
 
 interface DialogEditCourseProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  selectedEditCourse: {
-    index: number;
-    course: SelectedCourse;
-  };
+  selectedEditCourse: SelectedCourse;
   newColorCode: string;
   setNewColorCode: (color: string) => void;
   changeColorSelectedCourse: (code: string, color: string) => void;
-  removeCourseFromSelectedList: (index: number) => void;
+  selectedCourses: SelectedCourse[];
+  setSelectedCourses: (array: SelectedCourse[]) => void;
 }
 
 export const DialogEditCourse: FC<DialogEditCourseProps> = ({
@@ -30,10 +28,11 @@ export const DialogEditCourse: FC<DialogEditCourseProps> = ({
   newColorCode,
   setNewColorCode,
   changeColorSelectedCourse,
-  removeCourseFromSelectedList,
+  selectedCourses,
+  setSelectedCourses,
 }) => {
   const saveCourseChanges = () => {
-    changeColorSelectedCourse(selectedEditCourse.course.code, newColorCode);
+    changeColorSelectedCourse(selectedEditCourse.code, newColorCode);
     setOpen(false);
     console.log("SAVED");
   };
@@ -49,15 +48,20 @@ export const DialogEditCourse: FC<DialogEditCourseProps> = ({
   };
 
   const removeCourse = () => {
-    removeCourseFromSelectedList(selectedEditCourse.index);
+    console.log("OLD", selectedCourses);
+    const index = selectedCourses.indexOf(selectedEditCourse);
+    if (index !== -1) {
+      selectedCourses.splice(index, 1);
+    }
+    console.log("NEW", [...selectedCourses]);
+    setSelectedCourses([...selectedCourses]);
     setOpen(false);
-    console.log("REMOVED");
   };
 
   return (
     <Dialog open={open} fullWidth>
       <DialogTitle sx={{ fontWeight: "bold", fontSize: "25px" }}>
-        {selectedEditCourse.course.code}
+        {selectedEditCourse.code}
       </DialogTitle>
       <DialogContent>
         <p className="inputLabel">Velg fargekode</p>
@@ -68,14 +72,12 @@ export const DialogEditCourse: FC<DialogEditCourseProps> = ({
             marginBottom: "20px",
             backgroundColor: newColorCode,
           }}
-          label={selectedEditCourse.course.code}
+          label={selectedEditCourse.code}
         ></Chip>
-        {selectedEditCourse.course.courseActivities.length > 0 ? (
+        {selectedEditCourse.courseActivities.length > 0 ? (
           <CheckboxCourseActivities
-            courseActivities={selectedEditCourse.course.courseActivities}
-            checkedArray={getCheckedArray(
-              selectedEditCourse.course.courseActivities
-            )}
+            courseActivities={selectedEditCourse.courseActivities}
+            checkedArray={getCheckedArray(selectedEditCourse.courseActivities)}
           />
         ) : (
           <div>

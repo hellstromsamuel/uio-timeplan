@@ -1,6 +1,6 @@
 import { Chip } from "@mui/material";
 import { FC } from "react";
-import CourseEvent from "../uio-api/interfaces/CourseEvent";
+import CourseEvent from "../../../../uio-api/interfaces/CourseEvent";
 
 interface CalenderEventListComponentProps {
   courseEvent: CourseEvent;

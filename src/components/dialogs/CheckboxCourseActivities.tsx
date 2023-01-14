@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { FC, useEffect, useState } from "react";
-import CourseActivityEvents from "../uio-api/interfaces/CourseActivityEvents";
+import CourseActivityEvents from "../../uio-api/interfaces/CourseActivityEvents";
 
 const makeNewArrayOneValue = (length: number, value: boolean) => {
   const newArray = [];
@@ -10,6 +10,28 @@ const makeNewArrayOneValue = (length: number, value: boolean) => {
     newArray[i] = value;
   }
   return newArray;
+};
+
+const getActivityLabelFromEvents = (activity: CourseActivityEvents) => {
+  const acitvityWeekDayAndTimes: string[] = [];
+  activity.events.forEach((event) => {
+    const weekdayAndTime =
+      event.weekday +
+      " " +
+      event.dtStart.split("T")[1].slice(0, 5) +
+      "-" +
+      event.dtEnd.split("T")[1].slice(0, 5);
+    if (!acitvityWeekDayAndTimes.includes(weekdayAndTime)) {
+      acitvityWeekDayAndTimes.push(weekdayAndTime);
+    }
+  });
+
+  return (
+    <span>
+      <u>{activity.activityTitle}</u>
+      {" - " + acitvityWeekDayAndTimes.join(", ")}
+    </span>
+  );
 };
 
 interface CheckboxCourseActivitiesProps {
@@ -62,7 +84,7 @@ export const CheckboxCourseActivities: FC<CheckboxCourseActivitiesProps> = ({
         return (
           <FormControlLabel
             key={index}
-            label={activity.activityTitle}
+            label={getActivityLabelFromEvents(activity)}
             control={
               <Checkbox
                 checked={checked[index]}
@@ -79,7 +101,7 @@ export const CheckboxCourseActivities: FC<CheckboxCourseActivitiesProps> = ({
     <div>
       <p className="inputLabel">Hvilke aktiviteter vil du følge?</p>
       <FormControlLabel
-        label="Velg alle"
+        label={"Velg alle (" + courseActivities.length + ")"}
         control={
           <Checkbox
             checked={checked.every((checkboxValue) => checkboxValue === true)}

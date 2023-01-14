@@ -1,18 +1,14 @@
 import { FC } from "react";
-import { combineCourseActivities } from "../uio-api/requests/combineCourseActivities";
-import CourseEvent from "../uio-api/interfaces/CourseEvent";
-import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
+import CourseEvent from "../../../../uio-api/interfaces/CourseEvent";
 import { CalenderEventListComponent } from "./CalenderEventListComponent";
 
 interface CalendarListComponentProps {
-  selectedCourses: SelectedCourse[];
+  allCourseEventsMap: Map<string, CourseEvent[]>;
 }
 
 export const CalendarListComponent: FC<CalendarListComponentProps> = ({
-  selectedCourses,
+  allCourseEventsMap,
 }) => {
-  const allCourseEventsMap = combineCourseActivities(selectedCourses);
-
   const allCourseEventsMapAsArray = Array.from(allCourseEventsMap)
     .map(([key, value]) => ({ key, value }))
     .sort((a, b) => (a.key > b.key ? 1 : b.key > a.key ? -1 : 0));

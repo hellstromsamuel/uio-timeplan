@@ -31,14 +31,15 @@
 }
 
 .CalendarContainer {
+  margin-top: 10px;
   margin-bottom: 30px;
-  padding: 10px;
+  padding: 5px;
   border-radius: 10px;
   display: grid;
   grid-template-columns: auto;
 }
 
-.CalenderViewToggleButtons {
+.ToggleButtonsCalendarView {
   display: flex;
   flex-direction: row;
   column-gap: 10px;
@@ -48,18 +49,6 @@
 .CalendarTableComponent {
   display: grid;
   grid-template-columns: auto;
-}
-
-.CalendarTableComponent {
-  margin-top: 30px;
-  display: grid;
-  grid-template-columns: auto;
-}
-
-.CalenderShortcutsContainer {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 }
 
 .CalendarHeaderContainer {
@@ -94,10 +83,25 @@ td {
   height: 100%;
 }
 
+.CalenderBottomToolBar {
+  width: 100%;
+}
+
+.ShortcutButtonsCalendar {
+  float: left;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.CalenderWeekPicker {
+  float: right;
+  margin-bottom: 20px;
+}
+
 .CalendarEvent {
   margin: 2px 0px 2px 0px; /* top right bottom left */
   border-radius: 5px;
-  /* box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px; */
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px; /* Like Figma Drop Shadow */
   padding: 5px;
   display: flex;
@@ -121,10 +125,4 @@ a {
   color: blue;
   cursor: pointer;
   margin-right: 10px;
-}
-
-@media only screen and (min-width: 500px) {
-  .inputContainer {
-    grid-template-columns: max-content;
-  }
 }

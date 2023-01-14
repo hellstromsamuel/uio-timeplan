@@ -5,13 +5,13 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Chip } from "@mui/material";
-import { ColorPicker } from "./general/ColorPicker";
-import CourseActivityEvents from "../uio-api/interfaces/CourseActivityEvents";
-import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
-import { semesterCodeToText } from "../functions/semsterCodeToText";
+import { ColorPicker } from "../general/ColorPicker";
+import CourseActivityEvents from "../../uio-api/interfaces/CourseActivityEvents";
+import { SelectedCourse } from "../../uio-api/interfaces/SelectedCourse";
+import { semesterCodeToText } from "../../functions/semsterCodeToText";
 import { CheckboxCourseActivities } from "./CheckboxCourseActivities";
 import { InfoOutlined } from "@mui/icons-material";
-import { apiGetCourseSchedule } from "../uio-api/requests/apiGetCourseSchedule";
+import { apiGetCourseSchedule } from "../../uio-api/requests/apiGetCourseSchedule";
 
 interface DialogAddCourseProps {
   baseUrl: string;
@@ -21,11 +21,12 @@ interface DialogAddCourseProps {
   allSemesterCourses: string[];
   courseCode: string | null;
   setCourseCode: (courseCode: string | null) => void;
-  selectedCourses: SelectedCourse[];
   courseActivities: CourseActivityEvents[];
   setCourseActivities: (events: CourseActivityEvents[]) => void;
   autocompleteValue: string | null;
   setAutocompleteValue: (value: string | null) => void;
+  selectedCourses: SelectedCourse[];
+  setSelectedCourses: (array: SelectedCourse[]) => void;
 }
 
 export const DialogAddCourse: FC<DialogAddCourseProps> = ({
@@ -35,11 +36,12 @@ export const DialogAddCourse: FC<DialogAddCourseProps> = ({
   semesterCode,
   courseCode,
   setCourseCode,
-  selectedCourses,
   courseActivities,
   setCourseActivities,
   autocompleteValue,
   setAutocompleteValue,
+  selectedCourses,
+  setSelectedCourses,
 }) => {
   const [colorCode, setColorCode] = useState<string>("rgb(244, 67, 54, 0.5)");
 
@@ -61,11 +63,13 @@ export const DialogAddCourse: FC<DialogAddCourseProps> = ({
 
   const addCourse = () => {
     if (courseCode) {
-      selectedCourses.push({
+      const newArray = [...selectedCourses];
+      newArray.push({
         code: courseCode,
         color: colorCode,
         courseActivities: courseActivities,
       });
+      setSelectedCourses(newArray);
       closeDialog();
     }
   };

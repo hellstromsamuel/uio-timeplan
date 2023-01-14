@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { CourseExamProps } from "../uio-api/interfaces/CourseExamProps";
+import { CourseExamProps } from "../../uio-api/interfaces/CourseExamProps";
 
 interface ExamProps {
   courseCode: string;
