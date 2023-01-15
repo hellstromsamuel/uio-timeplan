@@ -1,6 +1,7 @@
 import { differenceInHours } from "date-fns";
 import CourseActivityEvents from "../interfaces/CourseActivityEvents";
 import CourseEvent from "../interfaces/CourseEvent";
+import { RoomCourseEvent } from "../interfaces/RoomCourseEvent";
 
 const weekdays = [
   "Mandag",
@@ -20,6 +21,20 @@ export const groupScheduleEventsByName = (events: CourseEvent[]) => {
       (courseActivity) => courseActivity.activityTitle === event.activityTitle
     );
 
+    const allRooms: RoomCourseEvent[] = [];
+    event.rooms?.forEach((room) => {
+      allRooms.push({
+        buildingAcronym: room.buildingAcronym,
+        buildingId: room.buildingId,
+        buildingName: room.buildingName,
+        buildingUrl: room.buildingUrl,
+        roomAcronym: room.buildingAcronym,
+        roomId: room.roomId,
+        roomName: room.roomName,
+        roomUrl: room.roomUrl,
+      });
+    });
+
     const courseEventObject = {
       dtStart: event.dtStart,
       dtEnd: event.dtEnd,
@@ -28,6 +43,7 @@ export const groupScheduleEventsByName = (events: CourseEvent[]) => {
       kind: event.kind,
       title: event.title,
       weekday: weekdays[new Date(event.dtStart).getDay() - 1],
+      rooms: allRooms,
     };
 
     if (index !== -1) {

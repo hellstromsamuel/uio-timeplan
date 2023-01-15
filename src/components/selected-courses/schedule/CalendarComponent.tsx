@@ -9,6 +9,7 @@ import {
 import { FC, useEffect, useState } from "react";
 import { getWeekIntervalFromDate } from "../../../functions/getWeekIntervalFromDate";
 import CourseEvent from "../../../uio-api/interfaces/CourseEvent";
+import { DialogCalendarEvent } from "../../dialogs/DialogCalendarEvent";
 import { timeCells } from "../../general/timeCells";
 import { CalendarEvent } from "./calendar-view/CalendarEvent";
 import { CalendarTableHeader } from "./calendar-view/CalendarTableHeader";
@@ -31,6 +32,11 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
     weekNumber: number;
     weekInterval: Date[];
   }>(getWeekIntervalFromDate(new Date()));
+
+  const [openDialogCalendarEvent, setOpenDialogCalendarEvent] =
+    useState<boolean>(false);
+  const [dialogCourseEvent, setDialogCourseEvent] =
+    useState<CourseEvent | null>(null);
 
   useEffect(() => {
     if (allCourseEventsMap.size > 0) {
@@ -130,6 +136,8 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
                                 <CalendarEvent
                                   key={index}
                                   courseEvent={courseEvent}
+                                  setOpen={setOpenDialogCalendarEvent}
+                                  setDialogCourseEvent={setDialogCourseEvent}
                                 />
                               );
                             })}
@@ -153,6 +161,14 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
           </TableBody>
         </Table>
       </TableContainer>
+
+      {openDialogCalendarEvent && dialogCourseEvent && (
+        <DialogCalendarEvent
+          open={openDialogCalendarEvent}
+          setOpen={setOpenDialogCalendarEvent}
+          courseEvent={dialogCourseEvent}
+        />
+      )}
     </div>
   );
 };

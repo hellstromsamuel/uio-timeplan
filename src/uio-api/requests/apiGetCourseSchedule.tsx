@@ -13,6 +13,8 @@ export async function apiGetCourseSchedule(
     const response = await fetch(request);
     const data = await response.json();
     const courseEventsGrouped = groupScheduleEventsByName(data.events);
+    console.log(courseEventsGrouped);
+
     setCourseEvents(courseEventsGrouped);
   } catch (error) {
     console.error(error);

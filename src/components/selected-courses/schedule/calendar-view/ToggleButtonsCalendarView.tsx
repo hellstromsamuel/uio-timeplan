@@ -32,9 +32,9 @@ export const ToggleButtonsCalendarView: FC<CalendarViewToggleButtonsProps> = ({
           <ToggleButton value="list" aria-label="list">
             <FormatListBulleted />
           </ToggleButton>
-          <ToggleButton value="text" aria-label="text">
+          {/* <ToggleButton value="text" aria-label="text">
             Tekst
-          </ToggleButton>
+          </ToggleButton> */}
         </ToggleButtonGroup>
       </div>
     </div>

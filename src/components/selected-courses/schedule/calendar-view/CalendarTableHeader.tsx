@@ -64,7 +64,7 @@ export const CalendarTableHeader: FC<CalendarTableHeaderProps> = ({
           backgroundColor:
             activeWeek.weekNumber === weekNumber ? "lightgray" : "white",
           color: "black",
-          fontSize: "10px",
+          fontSize: "12px",
           padding: "3px",
           marginLeft: "2px",
           marginBottom: "2px",
@@ -121,7 +121,9 @@ export const CalendarTableHeader: FC<CalendarTableHeaderProps> = ({
         <div className="CalendarWeekNumbers">
           {firstEventDate &&
             lastEventDate &&
-            weekNumberButtonsArray().map((weekNumberSpan) => weekNumberSpan)}
+            weekNumberButtonsArray().map((weekNumberSpan, index) => (
+              <div key={index}>{weekNumberSpan}</div>
+            ))}
         </div>
       </div>
     </div>

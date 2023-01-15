@@ -97,15 +97,27 @@ td {
   height: 100%;
 }
 
-.CalendarEvent {
-  flex: 1; /* Side width on elements (events) inside TableCell container*/
-  margin: 2px 0px 2px 0px; /* top right bottom left */
+.CalendarEventButton {
+  text-align: left;
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: black;
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px; /* Like Figma Drop Shadow */
+  height: 100%;
+}
+
+.CalendarEventDiv {
+  flex: 1; /* Side width on elements (events) inside TableCell container*/
+  margin: 2px 0px 2px 0px; /* top right bottom left */
   padding: 5px;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 14px); /* padding total 10px + margin total 4px */
+  cursor: pointer;
+  height: 100%;
 }
 
 .CourseEventComponent {

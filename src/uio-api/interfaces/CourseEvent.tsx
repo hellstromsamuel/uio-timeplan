@@ -1,3 +1,5 @@
+import { RoomCourseEvent } from "./RoomCourseEvent";
+
 export default interface CourseEvent {
   activityTitle?: string;
   activityBlockType?: string;
@@ -10,4 +12,5 @@ export default interface CourseEvent {
   kind?: string;
   title: string;
   weekday: string;
+  rooms?: RoomCourseEvent[];
 }
