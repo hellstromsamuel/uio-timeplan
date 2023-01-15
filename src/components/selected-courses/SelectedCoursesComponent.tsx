@@ -1,12 +1,12 @@
 import { Divider } from "@mui/material";
 import { FC, useEffect, useState } from "react";
-import CourseEvent from "../uio-api/interfaces/CourseEvent";
-import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
-import { combineCourseActivities } from "../uio-api/requests/combineCourseActivities";
-import { CalendarComponent } from "./selected-courses/schedule/CalendarComponent";
-import { CalendarListComponent } from "./selected-courses/schedule/list-view/CalendarListComponent";
-import { ToggleButtonsCalendarView } from "./selected-courses/schedule/calendar-view/ToggleButtonsCalendarView";
-import { CourseInfoMenuTabs } from "./selected-courses/schedule/CourseInfoMenuTabs";
+import CourseEvent from "../../uio-api/interfaces/CourseEvent";
+import { SelectedCourse } from "../../uio-api/interfaces/SelectedCourse";
+import { combineCourseActivities } from "../../uio-api/requests/combineCourseActivities";
+import { CalendarComponent } from "./schedule/CalendarComponent";
+import { CalendarListComponent } from "./schedule/list-view/CalendarListComponent";
+import { ToggleButtonsCalendarView } from "./schedule/calendar-view/ToggleButtonsCalendarView";
+import { CourseInfoMenuTabs } from "./schedule/CourseInfoMenuTabs";
 
 interface SelectedCoursesComponentProps {
   selectedCourses: SelectedCourse[];

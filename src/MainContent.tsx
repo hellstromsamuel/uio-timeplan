@@ -1,14 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./styles/App.css";
+import "./styles/CoursePage.css";
 import { CircularProgress } from "@mui/material";
-import { CoursePage } from "./components/CoursePage";
 import { calculateCurrentSemesterCode } from "./functions/calculateCurrentSemesterCode";
+import { HeaderComponent } from "./components/header/HeaderComponent";
+import { apiGetCoursesInSemester } from "./uio-api/requests/apiGetCoursesInSemester";
+import { SelectedCourse } from "./uio-api/interfaces/SelectedCourse";
+import { SelectedCoursesComponent } from "./components/selected-courses/SelectedCoursesComponent";
 
 const baseUrl = "https://data.uio.no/studies/v1/course/";
 const currentSemesterCode = calculateCurrentSemesterCode();
 
 export const MainContent = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [allSemesterCourses, setAllSemesterCourses] = useState<string[]>([]);
+  const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>([]);
+
+  useEffect(() => {
+    apiGetCoursesInSemester(
+      setAllSemesterCourses,
+      currentSemesterCode,
+      setLoading
+    );
+  }, [setLoading]);
 
   return (
     <div className="MainContent">
@@ -17,11 +31,19 @@ export const MainContent = () => {
           <CircularProgress size={100} />
         </div>
       ) : (
-        <CoursePage
-          setLoading={setLoading}
-          baseUrl={baseUrl}
-          currentSemesterCode={currentSemesterCode}
-        />
+        <div className="CoursePage">
+          <HeaderComponent
+            baseUrl={baseUrl}
+            currentSemesterCode={currentSemesterCode}
+            allSemesterCourses={allSemesterCourses}
+            selectedCourses={selectedCourses}
+            setSelectedCourses={setSelectedCourses}
+          />
+
+          {selectedCourses.length > 0 && (
+            <SelectedCoursesComponent selectedCourses={selectedCourses} />
+          )}
+        </div>
       )}
     </div>
   );

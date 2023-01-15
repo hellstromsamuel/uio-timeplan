@@ -93,8 +93,8 @@ td {
   display: flex;
   flex-direction: row;
   column-gap: 5px;
-  width: auto;
   height: 100%;
+  width: 100%;
 }
 
 .CalendarEventButton {
@@ -103,21 +103,24 @@ td {
   margin: 0;
   padding: 0;
   border: none;
+  border-radius: 5px;
   background-color: transparent;
   color: black;
-  border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px; /* Like Figma Drop Shadow */
   height: 100%;
+  width: 100%;
 }
 
 .CalendarEventDiv {
   flex: 1; /* Side width on elements (events) inside TableCell container*/
   margin: 2px 0px 2px 0px; /* top right bottom left */
   padding: 5px;
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
   cursor: pointer;
   height: 100%;
+  width: 100%;
 }
 
 .CourseEventComponent {

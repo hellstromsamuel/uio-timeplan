@@ -12,7 +12,7 @@ import CourseEvent from "../../../uio-api/interfaces/CourseEvent";
 import { DialogCalendarEvent } from "../../dialogs/DialogCalendarEvent";
 import { timeCells } from "../../general/timeCells";
 import { CalendarEvent } from "./calendar-view/CalendarEvent";
-import { CalendarTableHeader } from "./calendar-view/CalendarTableHeader";
+import { CalendarHeader } from "./calendar-view/CalendarHeader";
 import { TableHeaderDates } from "./calendar-view/TableHeaderDates";
 
 interface CalendarComponentProps {
@@ -73,7 +73,7 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
 
   return (
     <div className="CalendarComponent">
-      <CalendarTableHeader
+      <CalendarHeader
         activeWeek={activeWeek}
         setActiveWeek={setActiveWeek}
         firstEventDate={firstEventDate}

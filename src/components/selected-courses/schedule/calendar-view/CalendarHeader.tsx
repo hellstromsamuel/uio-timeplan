@@ -6,7 +6,7 @@ import { getWeekIntervalFromDate } from "../../../../functions/getWeekIntervalFr
 import { getWeekIntervalString } from "../../../../functions/getWeekIntervalString";
 import { changeWeek } from "./changeWeek";
 
-interface CalendarTableHeaderProps {
+interface CalendarHeaderProps {
   activeWeek: {
     weekNumber: number;
     weekInterval: Date[];
@@ -19,7 +19,7 @@ interface CalendarTableHeaderProps {
   lastEventDate?: Date;
 }
 
-export const CalendarTableHeader: FC<CalendarTableHeaderProps> = ({
+export const CalendarHeader: FC<CalendarHeaderProps> = ({
   activeWeek,
   setActiveWeek,
   firstEventDate,

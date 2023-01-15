@@ -4,6 +4,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { FC } from "react";
+import { getDateAsString } from "../../functions/getDateAsString";
 import CourseEvent from "../../uio-api/interfaces/CourseEvent";
 
 interface DialogCalendarEventProps {
@@ -35,6 +36,13 @@ export const DialogCalendarEvent: FC<DialogCalendarEventProps> = ({
         ></Chip>
         <div className="CalenderEventDiv">
           <p>
+            <strong>
+              {courseEvent.weekday}{" "}
+              {getDateAsString(new Date(courseEvent.dtStart))}
+            </strong>
+          </p>
+          <p>
+            Kl.{" "}
             {courseEvent.dtStart.split("T")[1].slice(0, 5) +
               " - " +
               courseEvent.dtEnd.split("T")[1].slice(0, 5)}
