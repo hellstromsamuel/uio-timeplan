@@ -45,10 +45,13 @@ export const CalendarTableHeader: FC<CalendarTableHeaderProps> = ({
     const date = new Date();
     const year = getYear(date);
     const firstDayOfWeek = startOfWeek(
-      setWeek(new Date(year, 0, 1), weekNumber),
+      setWeek(new Date(year, 0, 1), weekNumber + 1), // + 1 fixed bug
       { weekStartsOn: 1 }
     );
+    firstDayOfWeek.setHours(12);
     const weekIntervalWeekNumber = getWeekIntervalFromDate(firstDayOfWeek);
+    console.log(weekIntervalWeekNumber);
+
     setActiveWeek(weekIntervalWeekNumber);
   };
 
