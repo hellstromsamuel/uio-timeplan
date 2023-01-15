@@ -13,8 +13,8 @@ import { CheckboxCourseActivities } from "./CheckboxCourseActivities";
 interface DialogEditCourseProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  selectedEditCourse: SelectedCourse;
-  newColorCode: string;
+  selectedEditCourse: SelectedCourse | null;
+  newColorCode: string | null;
   setNewColorCode: (color: string) => void;
   changeColorSelectedCourse: (code: string, color: string) => void;
   selectedCourses: SelectedCourse[];
@@ -32,9 +32,11 @@ export const DialogEditCourse: FC<DialogEditCourseProps> = ({
   setSelectedCourses,
 }) => {
   const saveCourseChanges = () => {
-    changeColorSelectedCourse(selectedEditCourse.code, newColorCode);
-    setOpen(false);
-    console.log("SAVED");
+    if (selectedEditCourse && newColorCode) {
+      changeColorSelectedCourse(selectedEditCourse.code, newColorCode);
+      setOpen(false);
+      console.log("SAVED");
+    }
   };
 
   const getCheckedArray = (courseActivities: CourseActivityEvents[]) => {
@@ -48,36 +50,46 @@ export const DialogEditCourse: FC<DialogEditCourseProps> = ({
   };
 
   const removeCourse = () => {
-    console.log("OLD", selectedCourses);
-    const index = selectedCourses.indexOf(selectedEditCourse);
-    if (index !== -1) {
-      selectedCourses.splice(index, 1);
+    if (selectedEditCourse) {
+      console.log("OLD", selectedCourses);
+      const index = selectedCourses.indexOf(selectedEditCourse);
+      if (index !== -1) {
+        selectedCourses.splice(index, 1);
+      }
+      console.log("NEW", [...selectedCourses]);
+      setSelectedCourses([...selectedCourses]);
+      setOpen(false);
     }
-    console.log("NEW", [...selectedCourses]);
-    setSelectedCourses([...selectedCourses]);
-    setOpen(false);
   };
 
   return (
     <Dialog open={open} fullWidth>
       <DialogTitle sx={{ fontWeight: "bold", fontSize: "25px" }}>
-        {selectedEditCourse.code}
+        {selectedEditCourse?.code}
       </DialogTitle>
       <DialogContent>
         <p className="inputLabel">Velg fargekode</p>
-        <ColorPicker colorCode={newColorCode} setColorCode={setNewColorCode} />
+        {newColorCode && (
+          <ColorPicker
+            colorCode={newColorCode}
+            setColorCode={setNewColorCode}
+          />
+        )}
         <Chip
           sx={{
             marginTop: "10px",
             marginBottom: "20px",
             backgroundColor: newColorCode,
+            fontSize: "15px",
+            padding: "10px",
           }}
-          label={selectedEditCourse.code}
+          label={selectedEditCourse?.code}
         ></Chip>
-        {selectedEditCourse.courseActivities.length > 0 ? (
+        {selectedEditCourse &&
+        selectedEditCourse.courseActivities.length > 0 ? (
           <CheckboxCourseActivities
             courseActivities={selectedEditCourse.courseActivities}
-            checkedArray={getCheckedArray(selectedEditCourse.courseActivities)}
+            checkedArray={getCheckedArray(selectedEditCourse?.courseActivities)}
           />
         ) : (
           <div>

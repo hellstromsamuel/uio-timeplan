@@ -89,6 +89,7 @@ export const DialogAddCourse: FC<DialogAddCourseProps> = ({
               marginTop: "20px",
               marginBottom: "10px",
               backgroundColor: colorCode,
+              fontSize: "15px",
               padding: "10px",
             }}
             label={courseCode}

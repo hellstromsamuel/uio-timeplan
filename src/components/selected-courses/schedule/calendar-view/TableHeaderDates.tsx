@@ -11,7 +11,7 @@ interface TableHeaderDatesProps {
 
 const TableCellContainer = (props: { left: string; right: string }) => {
   return (
-    <div style={{ fontWeight: "bold", minWidth: 100 }}>
+    <div style={{ fontWeight: "bold", width: 100 }}>
       <div style={{ float: "left" }}>{props.left}</div>
       <div style={{ float: "right" }}>{props.right}</div>
     </div>

@@ -2,12 +2,14 @@ import { FC, useEffect, useState } from "react";
 import "../styles/CoursePage.css";
 import { apiGetCoursesInSemester } from "../uio-api/requests/apiGetCoursesInSemester";
 import { DialogAddCourse } from "./dialogs/DialogAddCourse";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Chip, TextField } from "@mui/material";
 import CourseActivityEvents from "../uio-api/interfaces/CourseActivityEvents";
 import { SelectedCourse } from "../uio-api/interfaces/SelectedCourse";
 import { SelectedCoursesComponent } from "./SelectedCoursesComponent";
 import { hideKeyboardiOSSafari } from "../functions/hideKeyboardiOSSafari";
 import { getSemesterText } from "../functions/getSemesterText";
+import { Edit } from "@mui/icons-material";
+import { DialogEditCourse } from "./dialogs/DialogEditCourse";
 
 interface CoursePageProps {
   setLoading: (loading: boolean) => void;
@@ -44,6 +46,35 @@ export const CoursePage: FC<CoursePageProps> = ({
     );
   }, [currentSemesterCode, setLoading]);
 
+  /* --- Chip edit --- */
+  const handleChipEdit = (index: number) => {
+    setSelectedEditCourse(selectedCourses[index]);
+    setNewColorCode(selectedCourses[index].color); // show selected color in edit ColorPicker
+    setOpenDialogEditCourse(true);
+  };
+
+  const [openDialogEditCourse, setOpenDialogEditCourse] =
+    useState<boolean>(false);
+  const [selectedEditCourse, setSelectedEditCourse] =
+    useState<SelectedCourse | null>(null);
+  const [newColorCode, setNewColorCode] = useState<string | null>(null);
+
+  const changeColorSelectedCourse = (code: string, color: string) => {
+    const index = selectedCourses.findIndex((course) => course.code === code);
+    if (index !== -1) {
+      selectedCourses[index].color = color;
+    }
+    setSelectedCourses([...selectedCourses]);
+  };
+
+  useEffect(() => {
+    if (selectedCourses.length > 0 && !selectedEditCourse && !newColorCode) {
+      setSelectedEditCourse(selectedCourses[0]);
+      setNewColorCode(selectedCourses[0].color);
+    }
+  }, [selectedCourses, newColorCode, selectedEditCourse]);
+  /* --- --- */
+
   return (
     <div className="CoursePage">
       <div className="headerContainer">
@@ -52,6 +83,7 @@ export const CoursePage: FC<CoursePageProps> = ({
             ? "Legg til flere emner"
             : "Legg til emner"}
         </h2>
+
         <div className="inputContainer">
           <TextField
             disabled
@@ -79,13 +111,31 @@ export const CoursePage: FC<CoursePageProps> = ({
             )}
           />
         </div>
+
+        {selectedCourses.length > 0 && (
+          <div>
+            <h2>Endre valgte emner</h2>
+            {selectedCourses.map((course, index) => {
+              return (
+                <Chip
+                  key={index}
+                  sx={{
+                    marginRight: "10px",
+                    marginBottom: "10px",
+                    backgroundColor: course.color,
+                  }}
+                  label={course.code}
+                  deleteIcon={<Edit />}
+                  onDelete={() => handleChipEdit(index)}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {selectedCourses.length > 0 && (
-        <SelectedCoursesComponent
-          selectedCourses={selectedCourses}
-          setSelectedCourses={setSelectedCourses}
-        />
+        <SelectedCoursesComponent selectedCourses={selectedCourses} />
       )}
 
       {openDialogAddCourse && courseCode && (
@@ -103,6 +153,19 @@ export const CoursePage: FC<CoursePageProps> = ({
           setCourseActivities={setCourseActivities}
           autocompleteValue={autocompleteValue}
           setAutocompleteValue={setAutocompleteValue}
+        />
+      )}
+
+      {openDialogEditCourse && (
+        <DialogEditCourse
+          open={openDialogEditCourse}
+          setOpen={setOpenDialogEditCourse}
+          selectedEditCourse={selectedEditCourse}
+          newColorCode={newColorCode}
+          setNewColorCode={setNewColorCode}
+          changeColorSelectedCourse={changeColorSelectedCourse}
+          selectedCourses={selectedCourses}
+          setSelectedCourses={setSelectedCourses}
         />
       )}
     </div>
