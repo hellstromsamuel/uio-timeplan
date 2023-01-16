@@ -19,6 +19,7 @@ export const combineCourseActivities = (selectedCourses: SelectedCourse[]) => {
             durationHours: event.durationHours,
             title: event.title,
             weekday: event.weekday,
+            resourcesText: event.resourcesText,
             rooms: event.rooms,
           };
           if (allCourseEventsMap.has(event.dtStart.split(":")[0])) {

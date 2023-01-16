@@ -12,5 +12,6 @@ export default interface CourseEvent {
   kind?: string;
   title: string;
   weekday: string;
+  resourcesText?: string;
   rooms?: RoomCourseEvent[];
 }

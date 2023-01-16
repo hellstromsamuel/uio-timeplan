@@ -43,6 +43,7 @@ export const groupScheduleEventsByName = (events: CourseEvent[]) => {
       kind: event.kind,
       title: event.title,
       weekday: weekdays[new Date(event.dtStart).getDay() - 1],
+      resourcesText: event.resourcesText,
       rooms: allRooms,
     };
 

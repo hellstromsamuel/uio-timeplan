@@ -7,6 +7,8 @@ import { FC } from "react";
 import { getDateAsString } from "../../functions/getDateAsString";
 import CourseEvent from "../../uio-api/interfaces/CourseEvent";
 
+const parse = require("html-react-parser");
+
 interface DialogCalendarEventProps {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -64,6 +66,12 @@ export const DialogCalendarEvent: FC<DialogCalendarEventProps> = ({
             </div>
           )}
         </div>
+        {courseEvent.resourcesText && (
+          <p style={{ marginTop: "30px" }}>
+            <strong>Pensum:</strong>
+            {parse(courseEvent.resourcesText)}
+          </p>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setOpen(false)}>Lukk</Button>

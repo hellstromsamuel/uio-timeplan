@@ -12,6 +12,8 @@ export const CalendarEvent: FC<CalendarEventProps> = ({
   setOpen,
   setDialogCourseEvent,
 }) => {
+  console.log(courseEvent.resourcesText);
+
   return (
     <button className="CalendarEventButton">
       <div
