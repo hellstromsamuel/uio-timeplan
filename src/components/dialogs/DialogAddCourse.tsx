@@ -11,10 +11,8 @@ import { semesterCodeToText } from "../../functions/semsterCodeToText";
 import { CheckboxCourseActivities } from "./CheckboxCourseActivities";
 import { InfoOutlined } from "@mui/icons-material";
 import { apiGetCourseSchedule } from "../../uio-api/requests/apiGetCourseSchedule";
-import { CourseExam } from "../../uio-api/interfaces/CourseExam";
 import CourseEvent from "../../uio-api/interfaces/CourseEvent";
 import { groupCourseActivitiesByTitle } from "../../uio-api/requests/groupCourseActivitiesByTitle";
-import { apiGetExamInfo } from "../../uio-api/requests/apiGetExamInfo";
 
 interface DialogAddCourseProps {
   baseUrl: string;

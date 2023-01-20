@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { CourseExam } from "../../uio-api/interfaces/CourseExam";
 import { SelectedCourse } from "../../uio-api/interfaces/SelectedCourse";
 import { HeaderAddCourse } from "./HeaderAddCourse";
 import { HeaderSelectedCoursesEdit } from "./HeaderSelectedCoursesEdit";

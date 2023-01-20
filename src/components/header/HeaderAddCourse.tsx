@@ -1,9 +1,8 @@
 import { Autocomplete, TextField } from "@mui/material";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { getSemesterText } from "../../functions/getSemesterText";
 import { hideKeyboardiOSSafari } from "../../functions/hideKeyboardiOSSafari";
 import CourseEvent from "../../uio-api/interfaces/CourseEvent";
-import { CourseExam } from "../../uio-api/interfaces/CourseExam";
 import { SelectedCourse } from "../../uio-api/interfaces/SelectedCourse";
 import { apiGetExamInfo } from "../../uio-api/requests/apiGetExamInfo";
 import { apiGetSelectedCourse } from "../../uio-api/requests/apiGetSelectedCourse";
@@ -82,23 +81,25 @@ export const HeaderAddCourse: FC<HeaderAddCourseProps> = ({
   // selectedCoursesSamuel : example from a user
   // when getting the user's selected courses from a database:
   useEffect(() => {
-    selectedCoursesSamuel.forEach((course) => {
-      apiGetSelectedCourse(
-        // TODO: Handle multiple API requests -> re-render when all finshed
-        baseUrl,
-        currentSemesterCode,
-        course,
-        selectedCourses
-      );
-      apiGetExamInfo(
-        // TODO: Re-render when found exam for new courses
-        baseUrl,
-        currentSemesterCode,
-        course.code,
-        selectedCourses
-      );
-    });
-  }, [selectedCoursesSamuel]);
+    if (selectedCourses.length === 0) {
+      selectedCoursesSamuel.forEach((course) => {
+        apiGetSelectedCourse(
+          // TODO: Handle multiple API requests -> re-render when all finshed
+          baseUrl,
+          currentSemesterCode,
+          course,
+          selectedCourses
+        );
+        apiGetExamInfo(
+          // TODO: Re-render when found exam for new courses
+          baseUrl,
+          currentSemesterCode,
+          course.code,
+          selectedCourses
+        );
+      });
+    }
+  }, []);
 
   return (
     <div>

@@ -54,7 +54,7 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
         setActiveWeek(getWeekIntervalFromDate(firstDate));
       }
     }
-  }, [allCourseEventsMap]);
+  }, [allCourseEventsMap, activeWeek.weekInterval]);
 
   const weekDayTimesRowSpan = [
     { rowSpan: 0, hasEvents: false },
