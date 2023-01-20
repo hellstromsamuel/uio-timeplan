@@ -1,6 +1,6 @@
 {
-  "short_name": "Søk etter emner på UiO",
-  "name": "Create React App Sample",
+  "short_name": "UiO timeplan",
+  "name": "UiO timeplan",
   "icons": [
     {
       "src": "favicon.ico",
