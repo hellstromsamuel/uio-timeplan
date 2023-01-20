@@ -50,8 +50,6 @@ export const CalendarHeader: FC<CalendarHeaderProps> = ({
     );
     firstDayOfWeek.setHours(12);
     const weekIntervalWeekNumber = getWeekIntervalFromDate(firstDayOfWeek);
-    console.log(weekIntervalWeekNumber);
-
     setActiveWeek(weekIntervalWeekNumber);
   };
 
@@ -117,7 +115,7 @@ export const CalendarHeader: FC<CalendarHeaderProps> = ({
       </div>
 
       <div className="CalenderWeekPicker">
-        <span>Velg uke</span>
+        <span>Velg undervisningsuke</span>
         <div className="CalendarWeekNumbers">
           {firstEventDate &&
             lastEventDate &&

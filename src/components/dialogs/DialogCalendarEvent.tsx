@@ -65,13 +65,14 @@ export const DialogCalendarEvent: FC<DialogCalendarEventProps> = ({
               </p>
             </div>
           )}
+
+          {courseEvent.resourcesText && (
+            <div style={{ marginTop: "30px" }}>
+              <strong>Pensum:</strong>
+              {parse(courseEvent.resourcesText)}
+            </div>
+          )}
         </div>
-        {courseEvent.resourcesText && (
-          <p style={{ marginTop: "30px" }}>
-            <strong>Pensum:</strong>
-            {parse(courseEvent.resourcesText)}
-          </p>
-        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setOpen(false)}>Lukk</Button>

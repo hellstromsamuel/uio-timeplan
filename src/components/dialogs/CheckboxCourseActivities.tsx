@@ -12,6 +12,14 @@ const makeNewArrayOneValue = (length: number, value: boolean) => {
   return newArray;
 };
 
+const makeStartArray = (courseActivities: CourseActivityEvents[]) => {
+  const newArray: boolean[] = [];
+  courseActivities.forEach((activity, i) => {
+    newArray[i] = activity.activitySelected ? true : false;
+  });
+  return newArray;
+};
+
 const getActivityLabelFromEvents = (activity: CourseActivityEvents) => {
   const acitvityWeekDayAndTimes: string[] = [];
   activity.events.forEach((event) => {
@@ -44,9 +52,7 @@ export const CheckboxCourseActivities: FC<CheckboxCourseActivitiesProps> = ({
   checkedArray,
 }) => {
   const [checked, setChecked] = useState<boolean[]>(
-    checkedArray
-      ? checkedArray
-      : makeNewArrayOneValue(courseActivities.length, false)
+    checkedArray ? checkedArray : makeStartArray(courseActivities)
   );
 
   useEffect(() => {

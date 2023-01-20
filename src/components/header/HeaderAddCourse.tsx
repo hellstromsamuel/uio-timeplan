@@ -1,10 +1,58 @@
 import { Autocomplete, TextField } from "@mui/material";
-import { FC, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { getSemesterText } from "../../functions/getSemesterText";
 import { hideKeyboardiOSSafari } from "../../functions/hideKeyboardiOSSafari";
-import CourseActivityEvents from "../../uio-api/interfaces/CourseActivityEvents";
+import CourseEvent from "../../uio-api/interfaces/CourseEvent";
+import { CourseExam } from "../../uio-api/interfaces/CourseExam";
 import { SelectedCourse } from "../../uio-api/interfaces/SelectedCourse";
+import { apiGetExamInfo } from "../../uio-api/requests/apiGetExamInfo";
+import { apiGetSelectedCourse } from "../../uio-api/requests/apiGetSelectedCourse";
 import { DialogAddCourse } from "../dialogs/DialogAddCourse";
+
+const selectedCoursesSamuel = [
+  {
+    code: "IN1010",
+    color: "rgb(139,195,74, 0.5)",
+    selectedCourseActivities: [
+      { activityTitle: "Fellesøvelser" },
+      { activityTitle: "Gruppe 9 prosa" },
+    ],
+  },
+  {
+    code: "IN5160",
+    color: "rgb(33,150,243, 0.5)",
+    selectedCourseActivities: [
+      { activityTitle: "Forelesninger" },
+      { activityTitle: "Gruppe 1" },
+    ],
+  },
+  {
+    code: "IN5431",
+    color: "rgb(255,152,0, 0.5)",
+    selectedCourseActivities: [
+      { activityTitle: "Forelesninger" },
+      { activityTitle: "Gruppe" },
+    ],
+  },
+  {
+    code: "IN5000",
+    color: "rgb(255,235,59, 0.5)",
+    selectedCourseActivities: [
+      { activityTitle: "Forelesninger" },
+      { activityTitle: "Feedback sessions" },
+    ],
+  },
+  {
+    code: "IN5010",
+    color: "rgb(244,67,54, 0.5)",
+    selectedCourseActivities: [{ activityTitle: "Forelesninger" }],
+  },
+  {
+    code: "ECON2500",
+    color: "rgb(96,125,139, 0.5)",
+    selectedCourseActivities: [{ activityTitle: "Forelesninger" }],
+  },
+];
 
 interface HeaderAddCourseProps {
   baseUrl: string;
@@ -25,12 +73,32 @@ export const HeaderAddCourse: FC<HeaderAddCourseProps> = ({
     null
   );
   const [courseCode, setCourseCode] = useState<string | null>(null);
-  const [courseActivities, setCourseActivities] = useState<
-    CourseActivityEvents[]
-  >([]);
+  const [apiCourseSchedule, setApiCourseSchedule] = useState<CourseEvent[]>([]);
+
   const [openDialogAddCourse, setOpenDialogAddCourse] =
     useState<boolean>(false);
   const selectedCoursesArray = selectedCourses.map(({ code }) => code);
+
+  // selectedCoursesSamuel : example from a user
+  // when getting the user's selected courses from a database:
+  useEffect(() => {
+    selectedCoursesSamuel.forEach((course) => {
+      apiGetSelectedCourse(
+        // TODO: Handle multiple API requests -> re-render when all finshed
+        baseUrl,
+        currentSemesterCode,
+        course,
+        selectedCourses
+      );
+      apiGetExamInfo(
+        // TODO: Re-render when found exam for new courses
+        baseUrl,
+        currentSemesterCode,
+        course.code,
+        selectedCourses
+      );
+    });
+  }, [selectedCoursesSamuel]);
 
   return (
     <div>
@@ -54,7 +122,7 @@ export const HeaderAddCourse: FC<HeaderAddCourseProps> = ({
           }
           value={autocompleteValue}
           onChange={(event: any, newValue: string | null) => {
-            setCourseActivities([]);
+            setApiCourseSchedule([]);
             hideKeyboardiOSSafari();
             setAutocompleteValue(newValue);
             setCourseCode(newValue ? newValue.split(" - ")[0] : null); // only set courceCode
@@ -71,14 +139,14 @@ export const HeaderAddCourse: FC<HeaderAddCourseProps> = ({
           baseUrl={baseUrl}
           open={openDialogAddCourse}
           setOpen={setOpenDialogAddCourse}
-          semesterCode={currentSemesterCode}
+          currentSemesterCode={currentSemesterCode}
           allSemesterCourses={allSemesterCourses}
           courseCode={courseCode}
           setCourseCode={setCourseCode}
           selectedCourses={selectedCourses}
           setSelectedCourses={setSelectedCourses}
-          courseActivities={courseActivities}
-          setCourseActivities={setCourseActivities}
+          apiCourseSchedule={apiCourseSchedule}
+          setApiCourseSchedule={setApiCourseSchedule}
           autocompleteValue={autocompleteValue}
           setAutocompleteValue={setAutocompleteValue}
         />

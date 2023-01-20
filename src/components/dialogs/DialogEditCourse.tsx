@@ -68,7 +68,7 @@ export const DialogEditCourse: FC<DialogEditCourseProps> = ({
         {selectedEditCourse?.code}
       </DialogTitle>
       <DialogContent>
-        <p className="inputLabel">Velg fargekode</p>
+        <p className="inputLabel">Endre fargekode</p>
         {newColorCode && (
           <ColorPicker
             colorCode={newColorCode}

@@ -1,4 +1,4 @@
-export interface CourseExamProps {
+export interface CourseExam {
   availableDate: string;
   availableTime: string;
   durationHours: number;

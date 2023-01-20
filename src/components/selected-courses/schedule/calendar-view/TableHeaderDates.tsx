@@ -18,7 +18,7 @@ const TableCellContainer = (props: { left: string; right: string }) => {
   );
 };
 
-export const TableHeaderDates: FC<TableHeaderDatesProps> = ({ week }) => {
+export const TableHeadDates: FC<TableHeaderDatesProps> = ({ week }) => {
   return (
     <TableRow>
       <TableCell>

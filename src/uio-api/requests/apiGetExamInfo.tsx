@@ -1,17 +1,22 @@
-import { CourseExamProps } from "../interfaces/CourseExamProps";
+import { CourseExam } from "../interfaces/CourseExam";
+import { SelectedCourse } from "../interfaces/SelectedCourse";
 
 export async function apiGetExamInfo(
   baseUrl: string,
   semesterCode: string | undefined,
   courseCode: string | null,
-  setCourseExams: (exams: CourseExamProps[]) => void
+  selectedCourses: SelectedCourse[]
 ) {
   try {
     const request =
       baseUrl + courseCode + "/semester/" + semesterCode + "/exam";
     const response = await fetch(request);
     const data = await response.json();
-    setCourseExams(data.arrangements);
+    selectedCourses.forEach((selectedCourse) => {
+      if (selectedCourse.code === courseCode) {
+        selectedCourse.courseExams = data.arrangements;
+      }
+    });
   } catch (error) {
     console.error(error);
   }

@@ -13,7 +13,7 @@ import { DialogCalendarEvent } from "../../dialogs/DialogCalendarEvent";
 import { timeCells } from "../../general/timeCells";
 import { CalendarEvent } from "./calendar-view/CalendarEvent";
 import { CalendarHeader } from "./calendar-view/CalendarHeader";
-import { TableHeaderDates } from "./calendar-view/TableHeaderDates";
+import { TableHeadDates } from "./calendar-view/TableHeaderDates";
 
 interface CalendarComponentProps {
   allCourseEventsMap: Map<string, CourseEvent[]>;
@@ -47,7 +47,12 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
       );
       setFirstEventDate(firstDate);
       setLastEventDate(lastDate);
-      setActiveWeek(getWeekIntervalFromDate(firstDate));
+      if (
+        activeWeek.weekInterval[0] < firstDate ||
+        activeWeek.weekInterval[activeWeek.weekInterval.length - 1] > lastDate
+      ) {
+        setActiveWeek(getWeekIntervalFromDate(firstDate));
+      }
     }
   }, [allCourseEventsMap]);
 
@@ -79,8 +84,9 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
         firstEventDate={firstEventDate}
         lastEventDate={lastEventDate}
       />
-      <TableContainer>
+      <TableContainer sx={{ maxHeight: 500 }}>
         <Table
+          stickyHeader
           sx={{
             width: "99.9%",
             minWidth: 600,
@@ -90,7 +96,7 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
           aria-label="a dense table"
         >
           <TableHead>
-            <TableHeaderDates week={activeWeek} />
+            <TableHeadDates week={activeWeek} />
           </TableHead>
           <TableBody>
             {timeCells.map((time: string) => {
@@ -148,11 +154,11 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
                       return <TableCell key={index}></TableCell>;
                     } else {
                       return (
-                        <TableCell
+                        <TableCell // is hidden
                           key={index}
                           sx={{ display: "none" }}
                         ></TableCell>
-                      ); // is hidden
+                      );
                     }
                   })}
                 </TableRow>

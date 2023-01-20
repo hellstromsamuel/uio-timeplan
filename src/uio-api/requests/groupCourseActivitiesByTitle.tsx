@@ -13,11 +13,11 @@ const weekdays = [
   "Søndag",
 ];
 
-export const groupScheduleEventsByName = (events: CourseEvent[]) => {
-  const courseSchedule: CourseActivityEvents[] = [];
+export const groupCourseActivitiesByTitle = (events: CourseEvent[]) => {
+  const groupedCourseActivities: CourseActivityEvents[] = [];
 
   events.forEach((event: CourseEvent) => {
-    const index = courseSchedule.findIndex(
+    const index = groupedCourseActivities.findIndex(
       (courseActivity) => courseActivity.activityTitle === event.activityTitle
     );
 
@@ -48,17 +48,25 @@ export const groupScheduleEventsByName = (events: CourseEvent[]) => {
     };
 
     if (index !== -1) {
-      courseSchedule[index].events.push(courseEventObject);
+      groupedCourseActivities[index].events.push(courseEventObject);
     } else {
-      courseSchedule.push({
+      groupedCourseActivities.push({
         activityTitle: event.activityTitle,
         activityBlockType: event.activityBlockType,
-        activitySelected: false,
+        activitySelected: false, // event.activityBlockType === "plenary" ? true :
         activityType: event.activityType,
         events: [],
       });
-      courseSchedule.at(-1)?.events.push(courseEventObject);
+      groupedCourseActivities.at(-1)?.events.push(courseEventObject);
     }
   });
-  return courseSchedule;
+
+  // sort groupedCourseActivities by type
+  groupedCourseActivities.sort((a, b) =>
+    a.activityBlockType && b.activityBlockType
+      ? b.activityBlockType.localeCompare(a.activityBlockType)
+      : -1
+  );
+
+  return groupedCourseActivities;
 };

@@ -13,7 +13,8 @@ export async function apiGetCoursesInSemester(
 
     const courses: string[] = [];
     data.courses.forEach((course: { code: string; name: string }) => {
-      const courseFullName = course.code + " - " + course.name;
+      const courseFullName =
+        course.code + (course.name ? " - " + course.name : "");
       if (!courses.includes(courseFullName)) {
         courses.push(courseFullName);
       }

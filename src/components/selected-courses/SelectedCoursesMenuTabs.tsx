@@ -1,13 +1,20 @@
 import Tabs, { tabsClasses } from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import React, { useState } from "react";
-import { CalendarMonth } from "@mui/icons-material";
+import React, { FC, useState } from "react";
+import { CalendarMonth, Task } from "@mui/icons-material";
 
-export const CourseInfoMenuTabs = () => {
+interface SelectedCoursesMenuTabsProps {
+  setCourseMenu: (menu: string) => void;
+}
+
+export const SelectedCoursesMenuTabs: FC<SelectedCoursesMenuTabsProps> = ({
+  setCourseMenu,
+}) => {
   const [value, setValue] = useState<number>(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    setCourseMenu(newValue === 0 ? "schedule" : "exams");
   };
 
   const iconStyle = (index: number) => {
@@ -41,8 +48,8 @@ export const CourseInfoMenuTabs = () => {
       }}
     >
       {TabIcon(<CalendarMonth sx={iconStyle(0)} />, "Timeplan")}
-      {/* {TabIcon(<Task sx={iconStyle(1)} />, "Eksamen")}
-      {TabIcon(<LibraryBooks sx={iconStyle(2)} />, "Pensumliste")} */}
+      {TabIcon(<Task sx={iconStyle(1)} />, "Eksamen")}
+      {/* {TabIcon(<LibraryBooks sx={iconStyle(2)} />, "Pensumliste")} */}
     </Tabs>
   );
 };
