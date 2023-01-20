@@ -66,7 +66,9 @@ export const HeaderAddCourse: FC<HeaderAddCourseProps> = ({
     null
   );
   const [courseCode, setCourseCode] = useState<string | null>(null);
-  const [apiCourseSchedule, setApiCourseSchedule] = useState<CourseEvent[]>([]);
+  const [apiCourseSchedule, setApiCourseSchedule] = useState<
+    CourseEvent[] | null
+  >(null);
 
   const [openDialogAddCourse, setOpenDialogAddCourse] =
     useState<boolean>(false);
@@ -105,7 +107,7 @@ export const HeaderAddCourse: FC<HeaderAddCourseProps> = ({
           }
           value={autocompleteValue}
           onChange={(event: any, newValue: string | null) => {
-            setApiCourseSchedule([]);
+            setApiCourseSchedule(null);
             hideKeyboardiOSSafari();
             setAutocompleteValue(newValue);
             setCourseCode(newValue ? newValue.split(" - ")[0] : null); // only set courceCode

@@ -53,7 +53,7 @@ export const groupCourseActivitiesByTitle = (events: CourseEvent[]) => {
       groupedCourseActivities.push({
         activityTitle: event.activityTitle,
         activityBlockType: event.activityBlockType,
-        activitySelected: false, // event.activityBlockType === "plenary" ? true :
+        activitySelected: event.activityBlockType === "plenary" ? true : false,
         activityType: event.activityType,
         events: [],
       });

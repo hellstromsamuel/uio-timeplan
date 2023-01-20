@@ -4,7 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Chip } from "@mui/material";
+import { Chip, CircularProgress } from "@mui/material";
 import { ColorPicker } from "../general/ColorPicker";
 import { SelectedCourse } from "../../uio-api/interfaces/SelectedCourse";
 import { semesterCodeToText } from "../../functions/semsterCodeToText";
@@ -13,6 +13,7 @@ import { InfoOutlined } from "@mui/icons-material";
 import { apiGetCourseSchedule } from "../../uio-api/requests/apiGetCourseSchedule";
 import CourseEvent from "../../uio-api/interfaces/CourseEvent";
 import { groupCourseActivitiesByTitle } from "../../uio-api/requests/groupCourseActivitiesByTitle";
+import CourseActivityEvents from "../../uio-api/interfaces/CourseActivityEvents";
 
 interface DialogAddCourseProps {
   baseUrl: string;
@@ -22,8 +23,8 @@ interface DialogAddCourseProps {
   allSemesterCourses: string[];
   courseCode: string | null;
   setCourseCode: (courseCode: string | null) => void;
-  apiCourseSchedule: CourseEvent[];
-  setApiCourseSchedule: (events: CourseEvent[]) => void;
+  apiCourseSchedule: CourseEvent[] | null;
+  setApiCourseSchedule: (events: CourseEvent[] | null) => void;
   autocompleteValue: string | null;
   setAutocompleteValue: (value: string | null) => void;
   selectedCourses: SelectedCourse[];
@@ -45,6 +46,10 @@ export const DialogAddCourse: FC<DialogAddCourseProps> = ({
   setSelectedCourses,
 }) => {
   const [colorCode, setColorCode] = useState<string>("rgb(244, 67, 54, 0.5)");
+  const [courseActivities, setCourseActivities] = useState<
+    CourseActivityEvents[]
+  >([]);
+  // const [activitiesLoading, setActivitiesLoading] = useState<boolean>(true);
 
   useEffect(() => {
     apiGetCourseSchedule(
@@ -55,22 +60,29 @@ export const DialogAddCourse: FC<DialogAddCourseProps> = ({
     );
   }, [baseUrl, currentSemesterCode, courseCode, setApiCourseSchedule]);
 
+  useEffect(() => {
+    if (apiCourseSchedule !== null) {
+      setCourseActivities(groupCourseActivitiesByTitle(apiCourseSchedule));
+    }
+  }, [apiCourseSchedule]);
+
   const closeDialog = () => {
     setCourseCode(null);
     setAutocompleteValue(null);
-    setApiCourseSchedule([]);
+    setApiCourseSchedule(null);
+    setCourseActivities([]);
     setOpen(false);
   };
 
   const addCourse = () => {
     console.log(colorCode);
 
-    if (courseCode) {
+    if (courseCode && courseActivities) {
       const newArray = [...selectedCourses];
       newArray.push({
         code: courseCode,
         color: colorCode,
-        courseActivities: groupCourseActivitiesByTitle(apiCourseSchedule),
+        courseActivities: courseActivities,
       });
       setSelectedCourses(newArray);
       closeDialog();
@@ -98,15 +110,18 @@ export const DialogAddCourse: FC<DialogAddCourseProps> = ({
             label={courseCode}
           ></Chip>
 
-          {apiCourseSchedule.length > 0 && (
-            <CheckboxCourseActivities
-              courseActivities={groupCourseActivitiesByTitle(apiCourseSchedule)}
-            />
+          {courseActivities.length > 0 && (
+            <CheckboxCourseActivities courseActivities={courseActivities} />
           )}
-          {apiCourseSchedule.length === 0 && (
+          {courseActivities.length === 0 && (
             <div>
               <p className="inputLabel">Ingen aktiviteter i timeplanen</p>
               <InfoOutlined color="error" />
+            </div>
+          )}
+          {apiCourseSchedule === null && (
+            <div className="loadingContainer">
+              <CircularProgress size={100} />
             </div>
           )}
         </div>
