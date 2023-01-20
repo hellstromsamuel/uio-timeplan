@@ -84,9 +84,9 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
         firstEventDate={firstEventDate}
         lastEventDate={lastEventDate}
       />
-      <TableContainer sx={{ maxHeight: 500 }}>
+      <TableContainer sx={{ maxHeight: 800 }}>
         <Table
-          stickyHeader
+          // stickyHeader
           sx={{
             width: "99.9%",
             minWidth: 600,

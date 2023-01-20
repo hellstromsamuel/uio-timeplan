@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import "./styles/App.css";
 import "./styles/CoursePage.css";
 import { CircularProgress } from "@mui/material";
@@ -6,9 +6,7 @@ import { calculateCurrentSemesterCode } from "./functions/calculateCurrentSemest
 import { HeaderComponent } from "./components/header/HeaderComponent";
 import { apiGetCoursesInSemester } from "./uio-api/requests/apiGetCoursesInSemester";
 import { SelectedCourse } from "./uio-api/interfaces/SelectedCourse";
-import { ExamComponent } from "./components/selected-courses/ExamComponent";
-import { CourseExam } from "./uio-api/interfaces/CourseExam";
-import { ScheduleComponent } from "./components/selected-courses/ScheduleComponent";
+import { SelectedCoursesComponent } from "./components/selected-courses/SelectedCoursesComponent";
 
 const baseUrl = "https://data.uio.no/studies/v1/course/";
 const currentSemesterCode = calculateCurrentSemesterCode();
@@ -17,7 +15,6 @@ export const MainContent = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [allSemesterCourses, setAllSemesterCourses] = useState<string[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<SelectedCourse[]>([]);
-  const courseExams = useRef<CourseExam[]>([]);
 
   useEffect(() => {
     apiGetCoursesInSemester(
@@ -44,7 +41,7 @@ export const MainContent = () => {
           />
 
           {selectedCourses.length > 0 && (
-            <ScheduleComponent selectedCourses={selectedCourses} />
+            <SelectedCoursesComponent selectedCourses={selectedCourses} />
           )}
         </div>
       )}

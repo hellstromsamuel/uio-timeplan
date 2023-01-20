@@ -4,8 +4,7 @@ import { getSemesterText } from "../../functions/getSemesterText";
 import { hideKeyboardiOSSafari } from "../../functions/hideKeyboardiOSSafari";
 import CourseEvent from "../../uio-api/interfaces/CourseEvent";
 import { SelectedCourse } from "../../uio-api/interfaces/SelectedCourse";
-import { apiGetExamInfo } from "../../uio-api/requests/apiGetExamInfo";
-import { apiGetSelectedCourse } from "../../uio-api/requests/apiGetSelectedCourse";
+import { apiGetMultipleCourseSchedules } from "../../uio-api/requests/apiGetMultipleCourseSchedules";
 import { DialogAddCourse } from "../dialogs/DialogAddCourse";
 
 const selectedCoursesSamuel = [
@@ -46,11 +45,6 @@ const selectedCoursesSamuel = [
     color: "rgb(244,67,54, 0.5)",
     selectedCourseActivities: [{ activityTitle: "Forelesninger" }],
   },
-  {
-    code: "ECON2500",
-    color: "rgb(96,125,139, 0.5)",
-    selectedCourseActivities: [{ activityTitle: "Forelesninger" }],
-  },
 ];
 
 interface HeaderAddCourseProps {
@@ -81,25 +75,13 @@ export const HeaderAddCourse: FC<HeaderAddCourseProps> = ({
   // selectedCoursesSamuel : example from a user
   // when getting the user's selected courses from a database:
   useEffect(() => {
-    if (selectedCourses.length === 0) {
-      selectedCoursesSamuel.forEach((course) => {
-        apiGetSelectedCourse(
-          // TODO: Handle multiple API requests -> re-render when all finshed
-          baseUrl,
-          currentSemesterCode,
-          course,
-          selectedCourses
-        );
-        apiGetExamInfo(
-          // TODO: Re-render when found exam for new courses
-          baseUrl,
-          currentSemesterCode,
-          course.code,
-          selectedCourses
-        );
-      });
-    }
-  }, []);
+    apiGetMultipleCourseSchedules(
+      baseUrl,
+      currentSemesterCode,
+      selectedCoursesSamuel,
+      setSelectedCourses
+    );
+  }, [baseUrl, currentSemesterCode, setSelectedCourses]);
 
   return (
     <div>

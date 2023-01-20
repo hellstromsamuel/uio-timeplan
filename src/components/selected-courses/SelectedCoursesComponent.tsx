@@ -13,7 +13,7 @@ interface SelectedCoursesComponentProps {
   selectedCourses: SelectedCourse[];
 }
 
-export const ScheduleComponent: FC<SelectedCoursesComponentProps> = ({
+export const SelectedCoursesComponent: FC<SelectedCoursesComponentProps> = ({
   selectedCourses,
 }) => {
   const [allCourseEventsMap, setAllCourseEventsMap] = useState<
