@@ -49,7 +49,7 @@ export const DialogCalendarEvent: FC<DialogCalendarEventProps> = ({
               " - " +
               courseEvent.dtEnd.split("T")[1].slice(0, 5)}
           </p>
-          {courseEvent.rooms && (
+          {courseEvent.rooms && courseEvent.rooms.length > 0 && (
             <div>
               <p>
                 Rom:{" "}

@@ -5,7 +5,7 @@ import { SelectedCourse } from "../../uio-api/interfaces/SelectedCourse";
 import { combineCourseActivities } from "../../uio-api/requests/combineCourseActivities";
 import { CalendarComponent } from "./schedule/CalendarComponent";
 import { CalendarListComponent } from "./schedule/list-view/CalendarListComponent";
-import { ToggleButtonsCalendarView } from "./schedule/calendar-view/ToggleButtonsCalendarView";
+import { ToggleButtonsCalendarView } from "./schedule/ToggleButtonsCalendarView";
 import { SelectedCoursesMenuTabs } from "./SelectedCoursesMenuTabs";
 import { ExamComponent } from "./ExamComponent";
 
@@ -19,13 +19,12 @@ export const SelectedCoursesComponent: FC<SelectedCoursesComponentProps> = ({
   const [allCourseEventsMap, setAllCourseEventsMap] = useState<
     Map<string, CourseEvent[]>
   >(combineCourseActivities(selectedCourses));
-  const [view, setView] = useState<string>("kalender");
   const [courseMenu, setCourseMenu] = useState<string>("schedule");
 
   useEffect(() => {
     console.log("SELECTED COURSES COMPONENT", selectedCourses);
     setAllCourseEventsMap(combineCourseActivities(selectedCourses));
-  }, [selectedCourses]);
+  }, [selectedCourses, setAllCourseEventsMap]);
 
   return (
     <div className="selectedCoursesContainer">
@@ -33,17 +32,7 @@ export const SelectedCoursesComponent: FC<SelectedCoursesComponentProps> = ({
       <Divider />
 
       {courseMenu === "schedule" && (
-        <div className="CalendarContainer">
-          <ToggleButtonsCalendarView view={view} setView={setView} />
-
-          {view === "kalender" && (
-            <CalendarComponent allCourseEventsMap={allCourseEventsMap} />
-          )}
-          {view === "list" && (
-            <CalendarListComponent allCourseEventsMap={allCourseEventsMap} />
-          )}
-          {view === "text" && <p>Ren tekst</p>}
-        </div>
+        <CalendarComponent allCourseEventsMap={allCourseEventsMap} />
       )}
       {courseMenu === "exams" && (
         <ExamComponent selectedCourses={selectedCourses} />

@@ -26,7 +26,7 @@ export const ToggleButtonsCalendarView: FC<CalendarViewToggleButtonsProps> = ({
       <p style={{ marginBottom: "10px" }}>Visning</p>
       <div>
         <ToggleButtonGroup value={view} exclusive onChange={handleChange}>
-          <ToggleButton value="timeplan" aria-label="kalender">
+          <ToggleButton value="calendar" aria-label="calendar">
             <CalendarMonth />
           </ToggleButton>
           <ToggleButton value="list" aria-label="list">

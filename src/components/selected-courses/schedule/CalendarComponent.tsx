@@ -14,6 +14,8 @@ import { timeCells } from "../../general/timeCells";
 import { CalendarEvent } from "./calendar-view/CalendarEvent";
 import { CalendarHeader } from "./calendar-view/CalendarHeader";
 import { TableHeadDates } from "./calendar-view/TableHeaderDates";
+import { CalendarListComponent } from "./list-view/CalendarListComponent";
+import { ToggleButtonsCalendarView } from "./ToggleButtonsCalendarView";
 
 interface CalendarComponentProps {
   allCourseEventsMap: Map<string, CourseEvent[]>;
@@ -22,6 +24,7 @@ interface CalendarComponentProps {
 export const CalendarComponent: FC<CalendarComponentProps> = ({
   allCourseEventsMap,
 }) => {
+  const [view, setView] = useState<string>("calendar");
   const [firstEventDate, setFirstEventDate] = useState<Date | undefined>(
     undefined
   );
@@ -54,7 +57,7 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
         setActiveWeek(getWeekIntervalFromDate(firstDate));
       }
     }
-  }, [allCourseEventsMap, activeWeek.weekInterval]);
+  }, [allCourseEventsMap, setActiveWeek]);
 
   const weekDayTimesRowSpan = [
     { rowSpan: 0, hasEvents: false },
@@ -78,102 +81,113 @@ export const CalendarComponent: FC<CalendarComponentProps> = ({
 
   return (
     <div className="CalendarComponent">
+      <ToggleButtonsCalendarView view={view} setView={setView} />
+
       <CalendarHeader
         activeWeek={activeWeek}
         setActiveWeek={setActiveWeek}
         firstEventDate={firstEventDate}
         lastEventDate={lastEventDate}
       />
-      <TableContainer sx={{ maxHeight: 800 }}>
-        <Table
-          // stickyHeader
-          sx={{
-            width: "99.9%",
-            minWidth: 600,
-            border: "none",
-          }}
-          size="small"
-          aria-label="a dense table"
-        >
-          <TableHead>
-            <TableHeadDates week={activeWeek} />
-          </TableHead>
-          <TableBody>
-            {timeCells.map((time: string) => {
-              return (
-                <TableRow key={time}>
-                  <TableCell>
-                    <strong>{time}</strong>
-                  </TableCell>
-                  {weekDayTimesRowSpan.map((weekDayTimeCell, index) => {
-                    const events = getEventsForTableCell(
-                      allCourseEventsMap,
-                      activeWeek.weekInterval[index],
-                      time
-                    );
 
-                    weekDayTimesRowSpan[index].hasEvents = false;
-                    if (weekDayTimesRowSpan[index].rowSpan > 0)
-                      weekDayTimesRowSpan[index].rowSpan--;
+      {view === "list" ? (
+        <CalendarListComponent allCourseEventsMap={allCourseEventsMap} />
+      ) : (
+        <div className="CalendarTableContainer">
+          <TableContainer sx={{ maxHeight: 800 }}>
+            <Table
+              // stickyHeader
+              sx={{
+                width: "99.9%",
+                minWidth: 600,
+                border: "none",
+              }}
+              size="small"
+              aria-label="a dense table"
+            >
+              <TableHead>
+                <TableHeadDates week={activeWeek} />
+              </TableHead>
+              <TableBody>
+                {timeCells.map((time: string) => {
+                  return (
+                    <TableRow key={time}>
+                      <TableCell>
+                        <strong>{time}</strong>
+                      </TableCell>
+                      {weekDayTimesRowSpan.map((weekDayTimeCell, index) => {
+                        const events = getEventsForTableCell(
+                          allCourseEventsMap,
+                          activeWeek.weekInterval[index],
+                          time
+                        );
 
-                    if (events) {
-                      const durations = events.map(
-                        (event) => event.durationHours!
-                      );
-                      weekDayTimesRowSpan[index].rowSpan = Math.max(
-                        ...durations
-                      );
-                      weekDayTimesRowSpan[index].hasEvents = true;
-                    }
+                        weekDayTimesRowSpan[index].hasEvents = false;
+                        if (weekDayTimesRowSpan[index].rowSpan > 0)
+                          weekDayTimesRowSpan[index].rowSpan--;
 
-                    if (weekDayTimeCell.hasEvents) {
-                      return (
-                        <TableCell
-                          key={index}
-                          rowSpan={
-                            weekDayTimeCell.rowSpan > 0
-                              ? weekDayTimeCell.rowSpan
-                              : 1
-                          }
-                        >
-                          <div className="CalenderTableCellContainer">
-                            {events?.map((courseEvent, index) => {
-                              return (
-                                <CalendarEvent
-                                  key={index}
-                                  courseEvent={courseEvent}
-                                  setOpen={setOpenDialogCalendarEvent}
-                                  setDialogCourseEvent={setDialogCourseEvent}
-                                />
-                              );
-                            })}
-                          </div>
-                        </TableCell>
-                      );
-                    } else if (weekDayTimeCell.rowSpan === 0) {
-                      return <TableCell key={index}></TableCell>;
-                    } else {
-                      return (
-                        <TableCell // is hidden
-                          key={index}
-                          sx={{ display: "none" }}
-                        ></TableCell>
-                      );
-                    }
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                        if (events) {
+                          const durations = events.map(
+                            (event) => event.durationHours!
+                          );
+                          weekDayTimesRowSpan[index].rowSpan = Math.max(
+                            ...durations
+                          );
+                          weekDayTimesRowSpan[index].hasEvents = true;
+                        }
 
-      {openDialogCalendarEvent && dialogCourseEvent && (
-        <DialogCalendarEvent
-          open={openDialogCalendarEvent}
-          setOpen={setOpenDialogCalendarEvent}
-          courseEvent={dialogCourseEvent}
-        />
+                        if (weekDayTimeCell.hasEvents) {
+                          return (
+                            <TableCell
+                              key={index}
+                              rowSpan={
+                                weekDayTimeCell.rowSpan > 0
+                                  ? weekDayTimeCell.rowSpan
+                                  : 1
+                              }
+                            >
+                              <div className="CalenderTableCellContainer">
+                                {events?.map((courseEvent, index) => {
+                                  return (
+                                    <CalendarEvent
+                                      key={index}
+                                      courseEvent={courseEvent}
+                                      setOpen={setOpenDialogCalendarEvent}
+                                      setDialogCourseEvent={
+                                        setDialogCourseEvent
+                                      }
+                                    />
+                                  );
+                                })}
+                              </div>
+                            </TableCell>
+                          );
+                        } else if (weekDayTimeCell.rowSpan === 0) {
+                          return <TableCell key={index}></TableCell>;
+                        } else {
+                          return (
+                            <TableCell // is hidden
+                              key={index}
+                              sx={{ display: "none" }}
+                            ></TableCell>
+                          );
+                        }
+                      })}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          {openDialogCalendarEvent && dialogCourseEvent && (
+            <DialogCalendarEvent
+              open={openDialogCalendarEvent}
+              setOpen={setOpenDialogCalendarEvent}
+              courseEvent={dialogCourseEvent}
+            />
+          )}
+        </div>
       )}
     </div>
   );

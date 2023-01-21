@@ -1,5 +1,6 @@
 import { Autocomplete, TextField } from "@mui/material";
 import { FC, useEffect, useState } from "react";
+import { FirestoreUserSavedCourse } from "../../firebase/FirestoreUserInterface";
 import { getSemesterText } from "../../functions/getSemesterText";
 import { hideKeyboardiOSSafari } from "../../functions/hideKeyboardiOSSafari";
 import CourseEvent from "../../uio-api/interfaces/CourseEvent";
@@ -12,7 +13,7 @@ const selectedCoursesSamuel = [
     code: "IN1010",
     color: "rgb(139,195,74, 0.5)",
     selectedCourseActivities: [
-      { activityTitle: "Fellesøvelser" },
+      // { activityTitle: "Fellesøvelser" },
       { activityTitle: "Gruppe 9 prosa" },
     ],
   },
@@ -33,19 +34,12 @@ const selectedCoursesSamuel = [
     ],
   },
   {
-    code: "IN5000",
-    color: "rgb(255,235,59, 0.5)",
-    selectedCourseActivities: [
-      { activityTitle: "Forelesninger" },
-      { activityTitle: "Feedback sessions" },
-    ],
-  },
-  {
     code: "IN5010",
     color: "rgb(244,67,54, 0.5)",
     selectedCourseActivities: [{ activityTitle: "Forelesninger" }],
   },
 ];
+// const selectedCoursesSamuel: FirestoreUserSavedCourse[] = [];
 
 interface HeaderAddCourseProps {
   baseUrl: string;
@@ -66,9 +60,7 @@ export const HeaderAddCourse: FC<HeaderAddCourseProps> = ({
     null
   );
   const [courseCode, setCourseCode] = useState<string | null>(null);
-  const [apiCourseSchedule, setApiCourseSchedule] = useState<
-    CourseEvent[] | null
-  >(null);
+  const [apiCourseSchedule, setApiCourseSchedule] = useState<CourseEvent[]>([]);
 
   const [openDialogAddCourse, setOpenDialogAddCourse] =
     useState<boolean>(false);
@@ -77,20 +69,23 @@ export const HeaderAddCourse: FC<HeaderAddCourseProps> = ({
   // selectedCoursesSamuel : example from a user
   // when getting the user's selected courses from a database:
   useEffect(() => {
-    apiGetMultipleCourseSchedules(
-      baseUrl,
-      currentSemesterCode,
-      selectedCoursesSamuel,
-      setSelectedCourses
-    );
+    if (selectedCoursesSamuel.length > 0) {
+      apiGetMultipleCourseSchedules(
+        baseUrl,
+        currentSemesterCode,
+        selectedCoursesSamuel,
+        setSelectedCourses
+      );
+    }
   }, [baseUrl, currentSemesterCode, setSelectedCourses]);
 
   return (
     <div>
       <h2 style={{ marginBottom: "15px" }}>
-        {selectedCourses.length > 0 ? "Legg til flere emner" : "Legg til emner"}
+        {selectedCourses.length > 0
+          ? "Legg til flere emner"
+          : "Velg emner for å få opp timeplan"}
       </h2>
-
       <div className="inputContainer">
         <TextField
           disabled
@@ -100,14 +95,14 @@ export const HeaderAddCourse: FC<HeaderAddCourseProps> = ({
 
         <Autocomplete
           className="Autocomplete"
-          sx={{ border: "none", width: "100%" }}
+          sx={{ border: "none", minWidth: 400 }}
           options={allSemesterCourses}
           getOptionDisabled={(option) =>
             selectedCoursesArray.includes(option.split(" - ")[0])
           }
           value={autocompleteValue}
           onChange={(event: any, newValue: string | null) => {
-            setApiCourseSchedule(null);
+            setApiCourseSchedule([]);
             hideKeyboardiOSSafari();
             setAutocompleteValue(newValue);
             setCourseCode(newValue ? newValue.split(" - ")[0] : null); // only set courceCode

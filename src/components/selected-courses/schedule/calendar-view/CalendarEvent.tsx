@@ -35,10 +35,12 @@ export const CalendarEvent: FC<CalendarEventProps> = ({
       <span>
         <strong>{courseEvent.activityTitle}</strong>
       </span>
-      {courseEvent.rooms && (
+      {courseEvent.rooms && courseEvent.rooms.length > 0 && (
         <span>
           <a href={courseEvent.rooms[0].roomUrl}>
-            {courseEvent.rooms[0].roomAcronym}
+            {courseEvent.rooms[0].roomAcronym +
+              ": " +
+              courseEvent.rooms[0].roomName}
           </a>
         </span>
       )}
